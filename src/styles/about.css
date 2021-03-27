@@ -1,0 +1,87 @@
+.about {
+	/*    background-image: url('../assets/images/about.jpg');
+ */
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+h2,
+h3,
+h4 {
+	color: teal
+}
+
+.about__header {
+	margin: 4rem auto;
+	font-weight: 800;
+	text-align: center;
+	color: teal;
+}
+
+.about__card {
+	width: 20rem;
+	height: 20rem;
+	margin: 1rem;
+	overflow: hidden;
+	padding: 0;
+	border: 0.05rem solid rgb(0, 0, 0, 0.8);
+	border-radius: 1rem;
+	box-shadow: 2px 2px 3px 3px rgb(0, 0, 0, 0.5);
+}
+
+.about__card:hover {
+	box-shadow: 3px 3px 5px 5px rgb(0, 0, 0, 0.5);
+}
+
+.card__text {
+	margin-top: 2rem;
+	width: 75%;
+	font-size: 1rem;
+	font-weight: 600;
+	line-height: 1rem;
+}
+
+.card__img-games {
+	width: 100%;
+	height: 100%;
+	background-image: url('../assets/images/247.svg');
+	background-position: right top;
+	background-size: contain;
+	background-repeat: no-repeat;
+
+}
+
+.card__img-247 {
+	width: 100%;
+	height: 100%;
+	background-image: url('../assets/images/247.svg');
+	background-position: right top;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.card__img-stats {
+	width: 100%;
+	height: 100%;
+	background-image: url('../assets/images/247.svg');
+	background-position: right top;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.card__img-method {
+	width: 100%;
+	height: 100%;
+	background-image: url('../assets/images/247.svg');
+	background-position: right top;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+img.about__game {
+	width: 100%;
+	height: 100%;
+	object-position: center;
+	object-fit: fill;
+}
