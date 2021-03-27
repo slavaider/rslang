@@ -1,0 +1,17 @@
+.footer__container {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   text-align: center;
+}
+
+img.logo__icon {
+   width: 6rem;
+   height: 4rem;
+}
+
+img.logo__icon:hover {
+   opacity: 0.75;
+   border-radius: 10%;
+   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px 1px rgba(0, 0, 0, 0.22);
+}
