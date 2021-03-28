@@ -1,50 +1,96 @@
 import React from "react";
-import { useState } from "react";
-import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
+import {Badge, Button, FormControl, InputGroup, Modal, Spinner} from "react-bootstrap";
+import {Login} from "../store/actions/auth";
+import {connect} from "react-redux";
 
-function Login(props) {
-  const [show, setShow] = useState(true);
+class Signin extends React.Component {
+  state = {
+    show: true
+  }
 
-  const handleClose = () => setShow(false);
-  //const handleShow = () => setShow(true);
+  componentDidMount() {
+    if (localStorage.getItem('token')) {
+      this.props.history.push('/')
+    }
+  }
 
-  return (
-    <>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Войти</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <InputGroup className="mb-3">
-            <FormControl
-              placeholder="Электронная почта"
-              aria-label="Usermail"
-              aria-describedby="user__mail"
-            />
-          </InputGroup>
+  close = () => this.setState({show: false})
 
-          <InputGroup className="mb-1">
-            <FormControl
-              placeholder="Пароль"
-              aria-label="Userpassword"
-              aria-describedby="user__password"
-            />
-          </InputGroup>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose} href="/home">
-            Закрыть
-          </Button>
-          <Button variant="primary">Войти</Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+  Login = (e) => {
+    e.preventDefault()
+    const user = {
+      email: e.target.email.value,
+      password: e.target.password.value,
+    }
+    this.props.Login(user)
+    if(!this.props.loading && this.props.error===null){
+      this.props.history.push('/')
+    }
+  }
+
+  render() {
+    return (
+        <Modal
+            show={this.state.show}
+            onHide={this.close}
+            backdrop="static"
+            keyboard={false}
+        >
+          {!this.props.loading ?
+              <form onSubmit={this.Login}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Войти</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {this.props.error ? (
+                      <p>
+                        <Badge variant="danger">{this.props.error}</Badge>
+                      </p>
+                  ) : null}
+                  <InputGroup className="mb-3">
+                    <FormControl
+                        name="email"
+                        placeholder="Электронная почта"
+                        aria-label="Usermail"
+                        aria-describedby="user__mail"
+                    />
+                  </InputGroup>
+
+                  <InputGroup className="mb-3">
+                    <FormControl
+                        name="password"
+                        placeholder="Пароль"
+                        aria-label="Userpassword"
+                        aria-describedby="user__password"
+                    />
+                  </InputGroup>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={this.close} href="/home">
+                    Закрыть
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    Войти
+                  </Button>
+                </Modal.Footer>
+              </form> : <Spinner size="lg" animation="border" variant="primary"/>
+          }
+        </Modal>
+    );
+  }
 }
 
-export default Login;
+function mapDispatchToProps(dispatch) {
+  return {
+    Login: (user) => dispatch(Login(user)),
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    loading: state.loading.loading,
+    error: state.loading.error,
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Signin);

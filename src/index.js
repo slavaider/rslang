@@ -14,13 +14,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const store = new createStore(root_reducer, applyMiddleware(thunk));
 
 ReactDOM.render(
-  <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <Homepage />
-        
       </Provider>
-    </BrowserRouter>
-  </React.StrictMode>,
+    </BrowserRouter>,
   document.getElementById("root")
 );
