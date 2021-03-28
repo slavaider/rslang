@@ -8,7 +8,7 @@ function Home() {
     <div>
       <Container fluid="xl" className="title__container">
         <h1 className="home__title">Английский язык на 1,2,3!</h1>
-        <img src={hero} className="hero__img" />
+        <img alt="hero" src={hero} className="hero__img" />
       </Container>
       <Container fluid="xl" className="text__container">
         <p className="home__text">

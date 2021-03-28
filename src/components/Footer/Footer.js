@@ -9,7 +9,7 @@ function Footer() {
       <Container fluid="xl" className="footer__container">
         <a href="https://rs.school/react/">
           <div>
-            <img src={rs_logo} className="logo__icon" />
+            <img alt="logo" src={rs_logo} className="logo__icon" />
           </div>
         </a>
       </Container>

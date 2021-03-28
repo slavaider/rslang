@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import "../styles/about.css";
-import game from "../assets/images/play.jpg";
+// import game from "../assets/images/play.jpg";
 
 function About() {
   return (
