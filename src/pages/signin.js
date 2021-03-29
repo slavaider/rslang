@@ -10,12 +10,19 @@ class Signin extends React.Component {
 
     componentDidMount() {
         if (localStorage.getItem('token')) {
-            this.props.history.push('/')
+            this.close()
+        }
+    }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.name !== this.props.name) {
+            this.close()
         }
     }
 
-    close = () => this.setState({show: false})
-
+    close = () => {
+        this.setState({show: false})
+        this.props.history.goBack()
+    }
     Register = (e) => {
         e.preventDefault()
         const user = {
@@ -24,10 +31,8 @@ class Signin extends React.Component {
             password: e.target.password.value,
         }
         this.props.register(user)
-        if(!this.props.loading && this.props.error===null){
-            this.props.history.push('/')
-        }
     }
+
 
     render() {
         return (
@@ -75,14 +80,17 @@ class Signin extends React.Component {
                             </InputGroup>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={this.close} href="/home">
+                            <Button variant="secondary" onClick={this.close}>
                                 Закрыть
                             </Button>
                             <Button variant="primary" type="submit">
                                 Зарегистрироваться
                             </Button>
                         </Modal.Footer>
-                    </form> : <Spinner size="lg" animation="border" variant="primary"/>
+                    </form> :
+                    <div className="d-flex justify-content-center align-items-center" style={{minHeight:374}}>
+                        <Spinner size="lg" animation="border" variant="primary"/>
+                    </div>
                 }
             </Modal>
         );
@@ -97,6 +105,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
     return {
+        name: state.auth.name,
         loading: state.loading.loading,
         error: state.loading.error,
     }
