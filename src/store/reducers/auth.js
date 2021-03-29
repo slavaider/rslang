@@ -7,8 +7,8 @@ const InitialState = {
     token: null,
     refreshToken: null,
 }
-// eslint-disable-next-line
-export default function (state = InitialState, action) {
+
+export default function Auth(state = InitialState, action) {
     switch (action.type) {
         case AUTH_SUCCESS:
             return {

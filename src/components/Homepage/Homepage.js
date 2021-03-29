@@ -15,31 +15,32 @@ import Stats from "../../pages/stats";
 import Ourteam from "../../pages/ourteam";
 import Login from "../../pages/login";
 import Signin from "../../pages/signin";
+import Book from "../../pages/book";
 
-function Homepage(){
-        return (
-            <div className="homepage">
-                <Header/>
-                <Switch>
-                    <Route exact path="/home" component={Home}/>
-                    <Route exact path="/about" component={About}/>
-                    <Route exact path="/aboutmethod" component={Method}/>
-                    <Route path="/games/savanna" component={Savanna}/>
-                    <Route path="/games/audiogame" component={AudioGame}/>
-                    <Route path="/games/sprint" component={Sprint}/>
-                    <Route path="/games/ourgame" component={Ourgame}/>
-                    <Route path="/games/rules" component={Rules}/>
-                    <Route path="/games/stats" component={Stats}/>
-                    <Route path="/ourteam" component={Ourteam}/>
-                    <Route path="/login" component={Login}/>
-                    <Route path="/signin" component={Signin}/>
-                    <Redirect to="/home"/>
-                </Switch>
-                <Footer/>
-            </div>
-        );
+function Homepage() {
+    return (
+        <div className="homepage">
+            <Header/>
+            <Switch>
+                <Route exact path="/" component={Home}/>
+                <Route exact path="/about" component={About}/>
+                <Route exact path="/aboutmethod" component={Method}/>
+                <Route path="/book" component={Book}/>
+                <Route path="/games/savanna" component={Savanna}/>
+                <Route path="/games/audiogame" component={AudioGame}/>
+                <Route path="/games/sprint" component={Sprint}/>
+                <Route path="/games/ourgame" component={Ourgame}/>
+                <Route path="/games/rules" component={Rules}/>
+                <Route path="/games/stats" component={Stats}/>
+                <Route path="/ourteam" component={Ourteam}/>
+                <Route path="/login" component={Login}/>
+                <Route path="/signin" component={Signin}/>
+                <Redirect to="/"/>
+            </Switch>
+            <Footer/>
+        </div>
+    );
 }
-
 
 
 export default Homepage;
