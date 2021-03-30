@@ -11,44 +11,55 @@ function About() {
       </Container>
       <Container fluid="xl">
         <Row>
-          <Col className="about__card" xl={6}>
-            <div className="card__img-games">
-              <h3>Игры</h3>
+          <Col className="about__card">
+            <div className="card__info">
+              <h3 className="card__title">Игры</h3>
               <p className="card__text">
                 Английский в игровой форме - не только позновательно, но и
-                интересно
+                интересно. Получайте новые знания играя в наши игры, будет
+                интересно не только детям, но и взрослым.
               </p>
             </div>
+            <div className="card__img-games"></div>
           </Col>
           <Col className="about__card">
-            <div className="card__img-247">
-              <h3>Мы Онлайн 24/7</h3>
+            {" "}
+            <div className="card__info">
+              <h3 className="card__title">Мы Онлайн 24/7</h3>
               <p className="card__text">
-                Изучайте язык когда вам удобно, так как наша платформа доступна
-                24/7 круглый год
+                Изучайте язык когда Вам удобно, так как наша платформа доступна
+                24/7 круглый год. Остается только найти свободное время и с
+                головой погрузиться в увлекательный процесс изучения английского
+                языка.
               </p>
             </div>
+            <div className="card__img-247"></div>
           </Col>
         </Row>
         <Row>
-          <Col className="about__card" xl={6}>
-            <div className="card__img-stats">
-              <h3>Статистика</h3>
+          <Col className="about__card">
+            {" "}
+            <div className="card__info">
+              <h3 className="card__title">Статистика</h3>
               <p className="card__text">
                 Прогресс своего обучения Вы можете контролировать в статистике
-                по Вашему обучению
+                нашего приложения. Здесь Вы увидите свои слабые и сильные
+                стороны.
               </p>
             </div>
+            <div className="card__img-stats"></div>
           </Col>
           <Col className="about__card">
-            <div className="card__img-method">
-              <h3>Метод интервальных повторений</h3>
+            {" "}
+            <div className="card__info">
+              <h3 className="card__title">Метод интервальных повторений</h3>
               <p className="card__text">
                 В тренировке "Карточки" используется метод интервальных
                 повторений, который признан одним из самых эффективных в
                 изучении новых языков.
               </p>
             </div>
+            <div className="card__img-method"></div>
           </Col>
         </Row>
       </Container>
