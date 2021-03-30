@@ -9,8 +9,7 @@ class Header extends React.Component {
         if (localStorage.getItem('token')) {
             this.props.autoLogin(
                 localStorage.getItem('user_id'),
-                localStorage.getItem('token'),
-                localStorage.getItem('refresh_token'),
+                localStorage.getItem('token')
             );
         }
     }
@@ -34,6 +33,9 @@ class Header extends React.Component {
                                 </Nav.Link>
                                 <Nav.Link href="/aboutmethod" className="nav__text">
                                     Метод интервальных повторений
+                                </Nav.Link>
+                                <Nav.Link href="/book" className="nav__text">
+                                    Электронный учебник
                                 </Nav.Link>
                                 <NavDropdown
                                     title="Игры"

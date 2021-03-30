@@ -1,11 +1,11 @@
-import {SET_ERROR, SET_LOADING} from "../actions/action_types";
+import {CLEAR_ERROR, SET_ERROR, SET_LOADING} from "../actions/action_types";
 
 const InitialState = {
     loading: false,
     error: null
 }
-// eslint-disable-next-line
-export default function (state = InitialState, action) {
+
+export default function Loading(state = InitialState, action) {
     switch (action.type) {
         case SET_LOADING: {
             return {
@@ -17,6 +17,12 @@ export default function (state = InitialState, action) {
             return {
                 ...state,
                 error: action.value
+            }
+        }
+        case CLEAR_ERROR: {
+            return {
+                ...state,
+                error: null
             }
         }
         default:
