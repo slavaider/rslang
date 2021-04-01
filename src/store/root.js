@@ -1,9 +1,9 @@
 import {combineReducers} from "redux";
-import Auth from './reducers/auth'
-import Loading from './reducers/loading'
+import Auth from "./reducers/auth"
+import Loading from "./reducers/loading"
 import Book from "./reducers/book";
 import Settings from "./reducers/settings"
-import Words from './reducers/words'
+import Words from "./reducers/words"
 
 export default combineReducers(
     {

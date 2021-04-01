@@ -9,7 +9,7 @@ class Signin extends React.Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem('token')) {
+        if (localStorage.getItem("token")) {
             this.close()
         }
     }
