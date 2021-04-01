@@ -4,6 +4,7 @@ import "./Header.css";
 import {autoLogin, logout} from "../../store/actions/auth";
 import {connect} from "react-redux";
 import {Link, NavLink} from "react-router-dom";
+import {asyncGetUserWords} from "../../store/actions/words";
 
 class Header extends React.Component {
     componentDidMount() {
@@ -12,8 +13,16 @@ class Header extends React.Component {
                 localStorage.getItem("user_id"),
                 localStorage.getItem("token")
             );
+
         }
     }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.name !== this.props.name){
+            this.props.getUserWords(localStorage.getItem("user_id"), localStorage.getItem("token"))
+        }
+    }
+
+
 
     render() {
         return (
@@ -39,7 +48,7 @@ class Header extends React.Component {
                                     Метод интервальных повторений
                                 </NavLink>
 
-                                <NavLink to="book" className="nav__text nav-link">
+                                <NavLink to="/book" className="nav__text nav-link">
                                     Электронный учебник
                                 </NavLink>
                                 <NavDropdown
@@ -47,26 +56,25 @@ class Header extends React.Component {
                                     id="basic-nav-dropdown"
                                     className="nav__text"
                                 >
-                                    <NavDropdown.Item className="nav__text">
-                                        <NavLink to="/games/savanna" className="nav-link">Саванна</NavLink>
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item className="nav__text">
-                                        <NavLink to="/games/audiogame" className="nav-link">Аудиовызов</NavLink>
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item className="nav__text">
-                                        <NavLink to="/games/sprint" className="nav-link">Спринт</NavLink>
-                                    </NavDropdown.Item>
+                                    <NavLink to="/games/savanna" className="nav__text dropdown-item">Саванна</NavLink>
 
-                                    <NavDropdown.Item className="nav__text">
-                                        <NavLink to="/games/ourgame" className="nav-link">Наша игра</NavLink>
-                                    </NavDropdown.Item>
+                                    <NavLink to="/games/audiogame"
+                                             className="nav__text dropdown-item">Аудиовызов</NavLink>
+
+
+                                    <NavLink to="/games/sprint" className="nav__text dropdown-item">Спринт</NavLink>
+
+
+                                    <NavLink to="/games/ourgame" className="nav__text dropdown-item">Наша игра</NavLink>
+
                                     <NavDropdown.Divider/>
-                                    <NavDropdown.Item className="nav__text">
-                                        <NavLink to="/games/rules" className="nav-link">Правила игры</NavLink>
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item className="nav__text">
-                                        <NavLink to="/games/stats" className="nav-link">Статистика</NavLink>
-                                    </NavDropdown.Item>
+
+                                    <NavLink to="/games/rules" className="nav__text dropdown-item">Правила
+                                        игры</NavLink>
+
+
+                                    <NavLink to="/games/stats" className="nav__text dropdown-item">Статистика</NavLink>
+
                                 </NavDropdown>
                                 <NavLink to="/ourteam" className="nav__text nav-link">
                                     Наша команда
@@ -107,7 +115,8 @@ class Header extends React.Component {
 function mapDispatchToProps(dispatch) {
     return {
         autoLogin: (id, token) => dispatch(autoLogin(id, token)),
-        logout: () => dispatch(logout())
+        logout: () => dispatch(logout()),
+        getUserWords: (id, token) => dispatch(asyncGetUserWords(id, token))
     }
 }
 
