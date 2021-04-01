@@ -1,15 +1,16 @@
 import React from "react";
-import {Button, Container, Form, Nav, Navbar, NavDropdown, Spinner,} from "react-bootstrap";
+import {Button, Container, Form, Nav, Navbar, NavDropdown, Spinner} from "react-bootstrap";
 import "./Header.css";
 import {autoLogin, logout} from "../../store/actions/auth";
 import {connect} from "react-redux";
+import {Link, NavLink} from "react-router-dom";
 
 class Header extends React.Component {
     componentDidMount() {
-        if (localStorage.getItem('token')) {
+        if (localStorage.getItem("token")) {
             this.props.autoLogin(
-                localStorage.getItem('user_id'),
-                localStorage.getItem('token')
+                localStorage.getItem("user_id"),
+                localStorage.getItem("token")
             );
         }
     }
@@ -19,53 +20,57 @@ class Header extends React.Component {
             <div>
                 <Container fluid="xl">
                     <Navbar expand="xl" style={{backgroundColor: "white"}}>
-                        <Navbar.Brand href="/">
-                            <div className="logo">
-                                <h1 className="logo__school">RS</h1>
-                                <p className="logo__task">Lang</p>
-                            </div>
+                        <Navbar.Brand>
+                            <Link to="/" className="nav-link">
+                                <div className="logo">
+                                    <h1 className="logo__school">RS</h1>
+                                    <p className="logo__task">Lang</p>
+                                </div>
+                            </Link>
                         </Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="mr-auto">
-                                <Nav.Link href="/about" className="nav__text">
+                                <NavLink to="about" className="nav__text nav-link">
                                     О проекте
-                                </Nav.Link>
-                                <Nav.Link href="/aboutmethod" className="nav__text">
+                                </NavLink>
+
+                                <NavLink to="/aboutmethod" className="nav__text nav-link">
                                     Метод интервальных повторений
-                                </Nav.Link>
-                                <Nav.Link href="/book" className="nav__text">
+                                </NavLink>
+
+                                <NavLink to="book" className="nav__text nav-link">
                                     Электронный учебник
-                                </Nav.Link>
+                                </NavLink>
                                 <NavDropdown
                                     title="Игры"
                                     id="basic-nav-dropdown"
                                     className="nav__text"
                                 >
-                                    <NavDropdown.Item href="/games/savanna" className="nav__text">
-                                        Саванна
+                                    <NavDropdown.Item className="nav__text">
+                                        <NavLink to="/games/savanna" className="nav-link">Саванна</NavLink>
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item href="/games/audiogame" className="nav__text">
-                                        Аудиовызов
+                                    <NavDropdown.Item className="nav__text">
+                                        <NavLink to="/games/audiogame" className="nav-link">Аудиовызов</NavLink>
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item href="/games/sprint" className="nav__text">
-                                        Спринт
+                                    <NavDropdown.Item className="nav__text">
+                                        <NavLink to="/games/sprint" className="nav-link">Спринт</NavLink>
                                     </NavDropdown.Item>
 
-                                    <NavDropdown.Item href="/games/ourgame" className="nav__text">
-                                        Наша игра
+                                    <NavDropdown.Item className="nav__text">
+                                        <NavLink to="/games/ourgame" className="nav-link">Наша игра</NavLink>
                                     </NavDropdown.Item>
                                     <NavDropdown.Divider/>
-                                    <NavDropdown.Item href="/games/rules" className="nav__text">
-                                        Правила игры
+                                    <NavDropdown.Item className="nav__text">
+                                        <NavLink to="/games/rules" className="nav-link">Правила игры</NavLink>
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item href="/games/stats" className="nav__text">
-                                        Статистика
+                                    <NavDropdown.Item className="nav__text">
+                                        <NavLink to="/games/stats" className="nav-link">Статистика</NavLink>
                                     </NavDropdown.Item>
                                 </NavDropdown>
-                                <Nav.Link href="/ourteam" className="nav__text">
+                                <NavLink to="/ourteam" className="nav__text nav-link">
                                     Наша команда
-                                </Nav.Link>
+                                </NavLink>
                             </Nav>
                             {!this.props.loading ? <Form inline>
                                 {this.props.name ?
@@ -78,12 +83,16 @@ class Header extends React.Component {
                                     </>
                                     :
                                     <>
-                                        <Button variant="outline-success" className="btn" href="/login">
-                                            Войти
-                                        </Button>
-                                        <Button variant="outline-success" href="/signin">
-                                            Регистрация
-                                        </Button>
+                                        <Link to="/login">
+                                            <Button variant="outline-success" className="btn">
+                                                Войти
+                                            </Button>
+                                        </Link>
+                                        <Link to="/signin">
+                                            <Button variant="outline-success">
+                                                Регистрация
+                                            </Button>
+                                        </Link>
                                     </>
                                 }
                             </Form> : <Spinner size="lg" animation="border" variant="primary"/>}

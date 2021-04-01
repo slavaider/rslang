@@ -9,20 +9,20 @@ const InitialState = {
 export default function Words(state = InitialState, action) {
     switch (action.type) {
         case CREATE_USER_WORD: {
-            if (action.wordType === 'learn') {
+            if (action.wordType === "learn") {
                 return {
                     ...state,
                     learning: [...state.learning, action.word],
                 }
             }
-            if (action.wordType === 'hard') {
+            if (action.wordType === "hard") {
                 return {
                     ...state,
                     learning: [...state.learning, action.word],
                     hard: [...state.hard, action.word],
                 }
             }
-            if (action.wordType === 'delete') {
+            if (action.wordType === "delete") {
                 return {
                     ...state,
                     deleted: [...state.deleted, action.word],
@@ -31,7 +31,7 @@ export default function Words(state = InitialState, action) {
             break
         }
         case UPDATE_USER_WORD: {
-            if (action.wordType === 'delete') {
+            if (action.wordType === "delete") {
                 return {
                     ...state,
                     hard: state.hard.filter((item) => item.wordId !== action.word.wordId),
@@ -39,17 +39,26 @@ export default function Words(state = InitialState, action) {
                     deleted: [...state.deleted, action.word],
                 }
             }
+            if (action.wordType === "learn") {
+                const copy = [...state.learning]
+                const index = copy.findIndex((el) => el.wordId === action.wordId)
+                copy[index] = action.word
+                return {
+                    ...state,
+                    learning: copy
+                }
+            }
             return {...state}
         }
         case DELETE_USER_WORD: {
-            if (action.wordType === 'hard') {
+            if (action.wordType === "hard") {
                 return {
                     ...state,
                     hard: state.hard.filter((item) => item.wordId !== action.wordId),
                     learning: state.learning.filter((item) => item.wordId !== action.wordId),
                 }
             }
-            if (action.wordType === 'delete') {
+            if (action.wordType === "delete") {
                 return {
                     ...state,
                     deleted: state.deleted.filter((item) => item.wordId !== action.wordId)

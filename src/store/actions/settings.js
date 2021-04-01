@@ -31,7 +31,7 @@ export const asyncSetTranslate = (value, id, token) => {
             }
         }, {
             headers: {
-                'Authorization': `Bearer ${token}`,
+                "Authorization": `Bearer ${token}`,
             }
         })
 
@@ -48,7 +48,7 @@ export const asyncSetActions = (value, id, token) => {
             }
         }, {
             headers: {
-                'Authorization': `Bearer ${token}`,
+                "Authorization": `Bearer ${token}`,
             }
         })
         dispatch(setActions(response.data.optional.actions))
@@ -59,7 +59,7 @@ export const asyncGetSettings = (id, token) => {
 
         const response = await axios.get(`${BASE_URL}users/${id}/settings`, {
             headers: {
-                'Authorization': `Bearer ${token}`,
+                "Authorization": `Bearer ${token}`,
             }
         })
         dispatch(getSettings(response.data.optional))
