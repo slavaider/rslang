@@ -39,6 +39,13 @@ export default function Words(state = InitialState, action) {
                     deleted: [...state.deleted, action.word],
                 }
             }
+            if (action.wordType === "hard") {
+                return {
+                    ...state,
+                    hard: [...state.hard, action.word],
+                    learning: state.learning.filter((item) => item.wordId !== action.word.wordId),
+                }
+            }
             if (action.wordType === "learn") {
                 const copy = [...state.learning]
                 const index = copy.findIndex((el) => el.wordId === action.wordId)
@@ -48,7 +55,7 @@ export default function Words(state = InitialState, action) {
                     learning: copy
                 }
             }
-            return {...state}
+            break
         }
         case DELETE_USER_WORD: {
             if (action.wordType === "hard") {

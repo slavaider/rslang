@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate";
 import {BASE_URL} from "../config";
 import {asyncGetSettings, asyncSetActions, asyncSetTranslate} from "../store/actions/settings";
 import {asyncGetWords} from "../store/actions/book";
-import {asyncCreateWord, asyncDeleteWord, asyncGetUserWords} from "../store/actions/words";
+import {asyncCreateWord, asyncDeleteWord} from "../store/actions/words";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 
@@ -42,7 +42,6 @@ class Book extends React.Component {
         }
         if (prevProps.id !== this.props.id) {
             this.props.getSettings(this.props.id, this.props.token)
-            this.props.getUserWords(this.props.id, this.props.token)
         }
     }
 
@@ -66,8 +65,8 @@ class Book extends React.Component {
     }
 
     // Words
-    createWord = (type, word, word_id) => {
-        this.props.createWord(type, group_variant[this.state.group - 1], word, word_id, this.props.id, this.props.token)
+    createWord = (type, word, word_id, image, textExample) => {
+        this.props.createWord(type, group_variant[this.state.group - 1], word, word_id, image, textExample, this.props.id, this.props.token)
     }
 
     deleteWord = (type, wordId) => {
@@ -193,10 +192,10 @@ class Book extends React.Component {
                                         {this.props.actions && this.props.token ? <Card.Subtitle className="ml-2 mb-2">
                                             <ButtonGroup>
                                                 <Button
-                                                    onClick={() => this.createWord("hard", item.word, item.id)}
+                                                    onClick={() => this.createWord("hard", item.word, item.id, item.image, item.textExample)}
                                                     size="sm">Сложное слово</Button>
                                                 <Button variant={item.hard ? "danger" : "warning"}
-                                                        onClick={() => this.createWord("delete", item.word, item.id)}
+                                                        onClick={() => this.createWord("delete", item.word, item.id, item.image, item.textExample)}
                                                         size="sm">Удалить</Button>
                                             </ButtonGroup>
                                         </Card.Subtitle> : null}
@@ -243,12 +242,12 @@ class Book extends React.Component {
                                     <ListGroup.Item>Нет изучаемых слов</ListGroup.Item> :
                                     <ListGroup>
                                         {this.props.learning.slice((this.state.learning_page - 1) * 20, this.state.learning_page * 20).map((item) => {
-                                                return (
-                                                    <ListGroup.Item key={"learn " + item.wordId} variant={item.group}>
-                                                        {item.value}
-                                                    </ListGroup.Item>
-                                                )
-                                            }
+                                            return (
+                                                <ListGroup.Item key={"learn " + item.wordId} variant={item.group}>
+                                                    {item.value} <span>fail:{item.fail}/success:{item.success}</span>
+                                                </ListGroup.Item>
+                                            )
+                                        }
                                         )}
                                     </ListGroup>
                                 }
@@ -284,7 +283,6 @@ class Book extends React.Component {
                             <h2>Сложные слова</h2>
                             <Col xs={12}>
                                 {this.props.hard.length === 0 ? <ListGroup.Item>Нет сложных слов</ListGroup.Item> :
-
                                     <ListGroup>
                                         {this.props.hard.slice((this.state.hard_page - 1) * 20, this.state.hard_page * 20).map((item) => {
                                                 return (
@@ -391,9 +389,8 @@ function mapDispatchToProps(dispatch) {
         setTranslate: (value, id, token) => dispatch(asyncSetTranslate(value, id, token)),
         setActions: (value, id, token) => dispatch(asyncSetActions(value, id, token)),
         getSettings: (id, token) => dispatch(asyncGetSettings(id, token)),
-        createWord: (type, group, value, wordId, userId, token) => dispatch(asyncCreateWord(type, group, value, wordId, userId, token)),
+        createWord: (type, group, value, wordId, image, textExample, userId, token) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, userId, token)),
         deleteWord: (type, wordId, userId, token) => dispatch(asyncDeleteWord(type, wordId, userId, token)),
-        getUserWords: (id, token) => dispatch(asyncGetUserWords(id, token))
     }
 }
 
