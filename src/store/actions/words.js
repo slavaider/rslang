@@ -1,9 +1,9 @@
-import {CREATE_USER_WORD, DELETE_USER_WORD, GET_USER_WORDS} from "./action_types";
+import {CREATE_USER_WORD, DELETE_USER_WORD, GET_USER_WORDS, UPDATE_USER_WORD} from "./action_types";
 import axios from "axios";
 import {BASE_URL} from "../../config";
 
 
-export const createWord = (type, group, value, wordId, image,textExample,success, fail) => {
+export const createWord = (type, group, value, wordId, image, textExample, success, fail, audio, hard) => {
     return {
         type: CREATE_USER_WORD,
         wordType: type,
@@ -14,8 +14,10 @@ export const createWord = (type, group, value, wordId, image,textExample,success
             type,
             image,
             textExample,
+            fail,
             success,
-            fail
+            audio,
+            hard
         }
     }
 }
@@ -26,9 +28,9 @@ export const deleteWord = (type, wordId) => {
         wordId
     }
 }
-export const updateWord = (type, group, value, wordId,image,textExample, success, fail) => {
+export const updateWord = (type, group, value, wordId, image, textExample, fail, success, audio, hard) => {
     return {
-        type: CREATE_USER_WORD,
+        type: UPDATE_USER_WORD,
         wordType: type,
         word: {
             value,
@@ -37,13 +39,15 @@ export const updateWord = (type, group, value, wordId,image,textExample, success
             type,
             image,
             textExample,
+            fail,
             success,
-            fail
+            audio,
+            hard
         }
     }
 }
 
-export const asyncCreateWord = (type, group, value, wordId, image,textExample, userId, token, fail = 0, success = 0) => {
+export const asyncCreateWord = (type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard) => {
     return async dispatch => {
         // Check existing word
         const response = await axios.get(`${BASE_URL}users/${userId}/words/${wordId}`,
@@ -55,17 +59,20 @@ export const asyncCreateWord = (type, group, value, wordId, image,textExample, u
             .catch(async (error) => {
                 // Create if not exist
                 if (error.response.status === 404) {
+                    const data = {
+                        value,
+                        type,
+                        group,
+                        image,
+                        textExample,
+                        fail,
+                        success,
+                        audio,
+                        hard
+                    }
                     await axios.post(`${BASE_URL}users/${userId}/words/${wordId}`,
                         {
-                            optional: {
-                                value,
-                                type,
-                                group,
-                                image,
-                                textExample,
-                                fail,
-                                success,
-                            }
+                            optional: data
                         }, {
                             headers: {
                                 "Authorization": `Bearer ${token}`,
@@ -73,7 +80,7 @@ export const asyncCreateWord = (type, group, value, wordId, image,textExample, u
                         }
                     )
                     console.clear();
-                    dispatch(createWord(type, group, value, wordId, image,textExample,fail, success))
+                    dispatch(createWord(type, group, value, wordId, image, textExample, fail, success, audio, hard))
                 }
             })
         if (typeof response !== "undefined") {
@@ -84,7 +91,9 @@ export const asyncCreateWord = (type, group, value, wordId, image,textExample, u
                     type,
                     group,
                     image,
-                    textExample
+                    textExample,
+                    audio,
+                    hard
                 }
             }
             if (type === "learn") {
@@ -99,7 +108,7 @@ export const asyncCreateWord = (type, group, value, wordId, image,textExample, u
                     }
                 }
             )
-            dispatch(updateWord(type, group, value, wordId,image,textExample, fail, success))
+            dispatch(updateWord(type, group, value, wordId, image, textExample, response.data.optional.fail + fail, response.data.optional.success + success, audio, hard))
         }
     }
 }
@@ -137,42 +146,29 @@ export const asyncGetUserWords = (userId, token) => {
         const learning = []
         const deleted = []
         const hard = []
+
         response.data.forEach((item) => {
+            const data = {
+                value: item.optional.value,
+                group: item.optional.group,
+                wordId: item.wordId,
+                type: item.optional.type,
+                image: item.optional.image,
+                textExample: item.optional.textExample,
+                fail: item.optional.fail,
+                success: item.optional.success,
+                audio: item.optional.audio,
+                hard: item.optional.hard,
+            }
             if (item.optional.type === "delete") {
-                deleted.push({
-                    value: item.optional.value,
-                    group: item.optional.group,
-                    wordId: item.wordId,
-                    type: item.optional.type,
-                    image: item.optional.image,
-                    textExample:item.optional.textExample,
-                    fail: item.optional.fail,
-                    success: item.optional.success,
-                })
+                deleted.push(data)
             }
             if (item.optional.type === "learn") {
-                learning.push({
-                    value: item.optional.value,
-                    group: item.optional.group,
-                    wordId: item.wordId,
-                    type: item.optional.type,
-                    image: item.optional.image,
-                    textExample:item.optional.textExample,
-                    fail: item.optional.fail,
-                    success: item.optional.success,
-                })
-            }
-            if (item.optional.type === "hard") {
-                hard.push({
-                    value: item.optional.value,
-                    group: item.optional.group,
-                    wordId: item.wordId,
-                    type: item.optional.type,
-                    image: item.optional.image,
-                    textExample:item.optional.textExample,
-                    fail: item.optional.fail,
-                    success: item.optional.success,
-                })
+                if (item.optional.hard) {
+                    hard.push(data)
+                } else {
+                    learning.push(data)
+                }
             }
         })
         dispatch(getUserWords(learning, deleted, hard))

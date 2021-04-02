@@ -16,12 +16,12 @@ class Header extends React.Component {
 
         }
     }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevProps.name !== this.props.name){
+        if (prevProps.name !== this.props.name) {
             this.props.getUserWords(localStorage.getItem("user_id"), localStorage.getItem("token"))
         }
     }
-
 
 
     render() {
@@ -51,7 +51,7 @@ class Header extends React.Component {
                                 <NavLink to="/book" className="nav__text nav-link">
                                     Электронный учебник
                                 </NavLink>
-                                <NavDropdown
+                                {this.props.name ? <NavDropdown
                                     title="Игры"
                                     id="basic-nav-dropdown"
                                     className="nav__text"
@@ -75,7 +75,7 @@ class Header extends React.Component {
 
                                     <NavLink to="/games/stats" className="nav__text dropdown-item">Статистика</NavLink>
 
-                                </NavDropdown>
+                                </NavDropdown> : null}
                                 <NavLink to="/ourteam" className="nav__text nav-link">
                                     Наша команда
                                 </NavLink>
