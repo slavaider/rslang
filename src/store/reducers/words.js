@@ -10,21 +10,24 @@ export default function Words(state = InitialState, action) {
     switch (action.type) {
         case CREATE_USER_WORD: {
             if (action.wordType === "learn") {
-                return {
-                    ...state,
-                    learning: [...state.learning, action.word],
-                }
-            }
-            if (action.wordType === "hard") {
-                return {
-                    ...state,
-                    learning: [...state.learning, action.word],
-                    hard: [...state.hard, action.word],
+                if (!action.word.hard) {
+                    return {
+                        ...state,
+                        learning: [...state.learning.filter((item) => item.wordId !== action.word.wordId), action.word],
+                    }
+                } else {
+                    return {
+                        ...state,
+                        learning: [...state.learning.filter((item) => item.wordId !== action.word.wordId), action.word],
+                        hard: [...state.hard.filter((item) => item.wordId !== action.word.wordId), action.word],
+                    }
                 }
             }
             if (action.wordType === "delete") {
                 return {
                     ...state,
+                    hard: state.hard.filter((item) => item.wordId !== action.word.wordId),
+                    learning: state.learning.filter((item) => item.wordId !== action.word.wordId),
                     deleted: [...state.deleted, action.word],
                 }
             }
@@ -34,37 +37,28 @@ export default function Words(state = InitialState, action) {
             if (action.wordType === "delete") {
                 return {
                     ...state,
-                    hard: state.hard.filter((item) => item.wordId !== action.word.wordId),
                     learning: state.learning.filter((item) => item.wordId !== action.word.wordId),
                     deleted: [...state.deleted, action.word],
                 }
             }
-            if (action.wordType === "hard") {
-                return {
-                    ...state,
-                    hard: [...state.hard, action.word],
-                    learning: state.learning.filter((item) => item.wordId !== action.word.wordId),
-                }
-            }
             if (action.wordType === "learn") {
-                const copy = [...state.learning]
-                const index = copy.findIndex((el) => el.wordId === action.wordId)
-                copy[index] = action.word
-                return {
-                    ...state,
-                    learning: copy
+                if (action.word.hard) {
+                    return {
+                        ...state,
+                        learning: [...state.learning.filter((item) => item.wordId !== action.word.wordId), action.word],
+                        hard: [...state.hard.filter((item) => item.wordId !== action.word.wordId), action.word],
+                    }
+                } else {
+                    return {
+                        ...state,
+                        learning: [...state.learning.filter((item) => item.wordId !== action.word.wordId), action.word],
+                        hard: state.hard.filter((item) => item.wordId !== action.word.wordId),
+                    }
                 }
             }
-            break
+            return state
         }
         case DELETE_USER_WORD: {
-            if (action.wordType === "hard") {
-                return {
-                    ...state,
-                    hard: state.hard.filter((item) => item.wordId !== action.wordId),
-                    learning: state.learning.filter((item) => item.wordId !== action.wordId),
-                }
-            }
             if (action.wordType === "delete") {
                 return {
                     ...state,
@@ -75,12 +69,11 @@ export default function Words(state = InitialState, action) {
         }
         case GET_USER_WORDS: {
             return {
-                learning: [...action.hard, ...action.learning],
+                learning: [...action.learning, ...action.hard],
                 deleted: action.deleted,
-                hard: action.hard,
+                hard: action.hard
             }
         }
-
         default:
             return state
     }
