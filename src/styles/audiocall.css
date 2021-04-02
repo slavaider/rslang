@@ -1,0 +1,141 @@
+.audiocall__content {
+	width: 100%;
+	height: 60vh;
+	margin-top: 2rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	position: relative;
+	overflow-x: hidden;
+	box-sizing: border-box;
+
+}
+
+.audiocall__title {
+	margin-left: 1%;
+	margin: 0 auto;
+	left: 0;
+	font-size: 2rem;
+	position: absolute;
+	top: 3%;
+	z-index: 1;
+}
+
+.speaker__img {
+	position: absolute;
+	top: 15%;
+	cursor: pointer;
+	width: 8rem;
+	height: 8rem;
+	padding: 0.2rem;
+	transition: 0.2s;
+	background-color: rgba(0, 153, 255, 0);
+	border-radius: 50%;
+	z-index: 2;
+}
+
+.speaker__img:hover {
+	background-color: rgba(0, 153, 255, 0.2);
+	border-radius: 50%;
+}
+
+.speaker__img:active {
+	background-color: rgba(255, 255, 255, 0.5);
+	border-radius: 50%;
+}
+
+.audiocall__word {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 50%;
+	height: 20%;
+	left: 40%;
+	top: 20%;
+}
+
+.btn__container-audiocall {
+	width: 60%;
+	height: 20%;
+	left: 40%;
+	bottom: 20%;
+	position: absolute;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.btn__audiocall {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	margin: 0;
+	width: 20%;
+	height: 50%;
+	font-size: 1.2rem;
+	font-weight: 500;
+	background-color: rgb(255, 255, 255, 0);
+	border-style: none;
+	color: black;
+	transition: 0.3s;
+	border-radius: 1rem;
+}
+
+.btn__audiocall:hover {
+	border: 0.1rem solid teal;
+}
+
+
+
+.btn__answer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	font-size: 1.2rem;
+	left: 62.5%;
+	width: 12%;
+	height: 8%;
+	top: 77%;
+	background-color: rgb(0, 128, 128);
+	border-style: none;
+	border-radius: 0.5rem;
+	transition: 0.3s;
+	padding-bottom: 5px;
+	outline: none;
+}
+
+.btn__answer:hover {
+	color: white;
+	background-color: rgb(0, 128, 128, 0.8);
+
+}
+
+.audiocall__result {
+	position: absolute;
+	margin: 0 auto;
+	left: 45%;
+	bottom: 5%;
+	width: 50%;
+	height: 1%;
+	border: 0.5rem solid gray;
+	z-index: 1;
+	border-radius: 0.2rem;
+}
+
+.audiocall__bg {
+	position: absolute;
+	height: 50%;
+	left: 0;
+	top: 25%;
+	margin: 0;
+	object-position: right;
+}
+
+
+
+
+.btn__audiocall {}
