@@ -16,3 +16,6 @@ export const CREATE_USER_WORD = "CREATE_WORD"
 export const DELETE_USER_WORD = "DELETE_WORD"
 export const GET_USER_WORDS = "GET_USER_WORDS"
 export const UPDATE_USER_WORD = "UPDATE_USER_WORD"
+// Stats
+export const GET_STATS = "GET_STATS"
+export const SET_STATS = "SET_STATS"

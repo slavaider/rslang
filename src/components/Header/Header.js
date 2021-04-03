@@ -51,6 +51,9 @@ class Header extends React.Component {
                                 <NavLink to="/book" className="nav__text nav-link">
                                     Электронный учебник
                                 </NavLink>
+                                {this.props.name ? <NavLink to="/games/stats" className="nav__text nav-link">
+                                    Статистика
+                                </NavLink> : null}
                                 {this.props.name ? <NavDropdown
                                     title="Игры"
                                     id="basic-nav-dropdown"

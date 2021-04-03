@@ -138,41 +138,46 @@ export const getUserWords = (learning, deleted, hard) => {
 
 export const asyncGetUserWords = (userId, token) => {
     return async dispatch => {
-        const response = await axios.get(`${BASE_URL}users/${userId}/words`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            }
-        }).catch((error) => {
-            console.log(error.response.data);
-        })
-        const learning = []
-        const deleted = []
-        const hard = []
-
-        response.data.forEach((item) => {
-            const data = {
-                value: item.optional.value,
-                group: item.optional.group,
-                wordId: item.wordId,
-                type: item.optional.type,
-                image: item.optional.image,
-                textExample: item.optional.textExample,
-                fail: item.optional.fail,
-                success: item.optional.success,
-                audio: item.optional.audio,
-                hard: item.optional.hard,
-            }
-            if (item.optional.type === "delete") {
-                deleted.push(data)
-            }
-            if (item.optional.type === "learn") {
-                if (item.optional.hard) {
-                    hard.push(data)
-                } else {
-                    learning.push(data)
+        if (userId) {
+            const response = await axios.get(`${BASE_URL}users/${userId}/words`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
                 }
-            }
-        })
-        dispatch(getUserWords(learning, deleted, hard))
+            }).catch((error) => {
+                console.log(error.response.data);
+            })
+            const learning = []
+            const deleted = []
+            const hard = []
+
+            response.data.forEach((item) => {
+                const data = {
+                    value: item.optional.value,
+                    group: item.optional.group,
+                    wordId: item.wordId,
+                    type: item.optional.type,
+                    image: item.optional.image,
+                    textExample: item.optional.textExample,
+                    fail: item.optional.fail,
+                    success: item.optional.success,
+                    audio: item.optional.audio,
+                    hard: item.optional.hard,
+                }
+                if (item.optional.type === "delete") {
+                    deleted.push(data)
+                }
+                if (item.optional.type === "learn") {
+                    if (item.optional.hard) {
+                        hard.push(data)
+                    } else {
+                        learning.push(data)
+                    }
+                }
+            })
+            dispatch(getUserWords(learning, deleted, hard))
+        } else {
+            dispatch(getUserWords([], [], []))
+        }
+
     }
 }
