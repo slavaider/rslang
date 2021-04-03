@@ -92,6 +92,8 @@ export const asyncCreateWord = (type, group, value, wordId, image, textExample, 
                     group,
                     image,
                     textExample,
+                    fail,
+                    success,
                     audio,
                     hard
                 }
