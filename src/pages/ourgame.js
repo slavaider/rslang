@@ -1,10 +1,10 @@
 import React from "react";
 import {Button, ButtonGroup, Card, Container, Form, InputGroup, Row, Spinner} from "react-bootstrap";
-import {connect} from "react-redux";
 import {asyncCreateWord} from "../store/actions/words";
 import {Link} from "react-router-dom"
 import {BASE_URL} from "../config";
 import {asyncGetWords} from "../store/actions/book";
+import {connect} from "react-redux";
 
 
 const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
@@ -19,7 +19,8 @@ class Ourgame extends React.Component {
         endgame: false,
         block: false,
         from: null,
-        level: null
+        level: null,
+        loading: false
     }
 
 
@@ -28,8 +29,7 @@ class Ourgame extends React.Component {
         const from = !!query.get("book")
         if (from && this.props.learning.length !== 0) {
             this.getFromLearning()
-        }
-        if (from && this.props.words.length !== 0) {
+        } else {
             this.getFromWords()
         }
         this.setState({from})
@@ -46,6 +46,10 @@ class Ourgame extends React.Component {
                 this.getFromWords()
             }
         }
+        if (prevState.questions !== this.state.questions) {
+            if (this.state.questions.length !== 0)
+                this.setState({loading: true})
+        }
     }
 
     getFromWords = () => {
@@ -55,41 +59,47 @@ class Ourgame extends React.Component {
             group = group_variant[this.state.level - 1]
         }
         this.props.words.forEach((word) => {
-            if (!this.props.learning.includes((el) => el.wordId === word.id) && !this.props.deleted.includes((el) => el.wordId === word.id)) {
-                this.props.createWord(
-                    "learn",
-                    group,
-                    word.word,
-                    word.id,
-                    word.image,
-                    word.textExample,
-                    this.props.id,
-                    this.props.token,
-                    0,
-                    0,
-                    word.audio,
-                    false)
-                let mask = ""
-                for (let i = 0; i < word.word.length; i++) {
-                    mask += "*"
+                const notLearn = !this.props.learning.find((el) => el.wordId === word.id)
+                const notDelete = !this.props.deleted.find((el) => el.wordId === word.id)
+                if (notLearn && notDelete) {
+                    this.props.createWord(
+                        "learn",
+                        group,
+                        word.word,
+                        word.id,
+                        word.image,
+                        word.textExample,
+                        this.props.id,
+                        this.props.token,
+                        0,
+                        0,
+                        word.audio,
+                        false)
+                    let mask = ""
+                    for (let i = 0; i < word.word.length; i++) {
+                        mask += "*"
+                    }
+                    words.push({
+                        text: word.word,
+                        img: word.image,
+                        id: word.id,
+                        example: word.textExample.replace(`${word.word}`, mask + `[${word.word.length}]`),
+                        raw: word.textExample,
+                        variant: group,
+                        audio: word.audio,
+                        hard: false
+                    })
                 }
-                words.push({
-                    text: word.word,
-                    img: word.image,
-                    id: word.id,
-                    example: word.textExample.replace(`${word.word}`, mask + `[${word.word.length}]`),
-                    variant: group,
-                    audio: word.audio,
-                    hard: false
-                })
             }
-        })
-        if (this.state.questions + words.length < 20) {
-            if (+localStorage.getItem("page") > 1) {
-                this.props.getWordsByState(+localStorage.getItem("group"), +localStorage.getItem("page") - 1)
-                localStorage.setItem("page", (+localStorage.getItem("page") - 1).toString())
-            } else
-                this.setState({block: true})
+        )
+        if (this.state.from) {
+            if (this.state.questions + words.length < 20) {
+                if (+localStorage.getItem("page") > 1) {
+                    this.props.getWordsByState(+localStorage.getItem("group"), +localStorage.getItem("page") - 1)
+                    localStorage.setItem("page", (+localStorage.getItem("page") - 1).toString())
+                } else
+                    this.setState({block: true})
+            }
         }
         this.setState({questions: [...this.state.questions, ...words]})
     }
@@ -113,6 +123,10 @@ class Ourgame extends React.Component {
             })
             return words.length < 20;
         })
+        if (words.length < 20) {
+            this.setState({learning_turn: false})
+            this.getFromWords()
+        }
         this.setState({questions: words})
     }
 
@@ -128,7 +142,7 @@ class Ourgame extends React.Component {
         if (this.state.level) {
             group = group_variant[this.state.level - 1]
         }
-        const answer = e.target.answer.value;
+        const answer = e.target.answer.value.toLowerCase();
         if (answer === this.state.questions[this.state.page].text) {
             this.setState((prevState) => ({
                 page: prevState.page + 1,
@@ -167,7 +181,7 @@ class Ourgame extends React.Component {
                 this.state.questions[this.state.page].hard
             )
         }
-        if (this.state.questions.length - this.state.page === 0) {
+        if (typeof this.state.questions[this.state.page + 1] === "undefined") {
             this.setState({endgame: true})
         }
     }
@@ -196,9 +210,9 @@ class Ourgame extends React.Component {
                 </>
             )
         } else
-            return (((this.state.block) || (this.state.questions.length >= 20)) ? <Container>
-                {this.state.endgame ? <>
-                    <h3 className="text-center">Конец игры <span>
+            return (this.state.loading ? <Container>
+                    {this.state.endgame ? <>
+                        <h3 className="text-center">Конец игры <span>
                      <ButtonGroup>
                     <Link to="/book">
                     <Button variant="info">Вернуться в учебник</Button>
@@ -208,40 +222,42 @@ class Ourgame extends React.Component {
                     </Link>
                 </ButtonGroup>
                 </span></h3>
-                </> : <>
-                    <h2 className="text-center">Отгадай слово по картинке и описанию</h2>
-                    <Row className="justify-content-center">
-                        <Card
-                            bg={this.state.questions[this.state.page].variant}
-                            key={"ourgame" + this.state.questions[this.state.page].id}
-                            text={"light"}
-                            className="my-2 mx-2"
-                        >
-                            <Card.Img variant="top" src={`${BASE_URL}${this.state.questions[this.state.page].img}`}/>
-                            <Card.Text className="text-center mt-2">
+                    </> : <>
+                        <h2 className="text-center">Отгадай слово по картинке и описанию</h2>
+                        <Row className="justify-content-center">
+                            <Card
+                                bg={this.state.questions[this.state.page].variant}
+                                key={"ourgame" + this.state.questions[this.state.page].id}
+                                text={"light"}
+                                className="my-2 mx-2"
+                            >
+                                <Card.Img variant="top"
+                                          src={`${BASE_URL}${this.state.questions[this.state.page].img}`}/>
+                                <Card.Text className="text-center mt-2">
                                 <span
                                     dangerouslySetInnerHTML={{__html: this.state.questions[this.state.page].example}}/>
-                            </Card.Text>
-                            <Card.Footer>
-                                <Form onSubmit={(e) => this.submit(e)}>
-                                    <InputGroup>
-                                        <Form.Control name="answer" placeholder="Answer"/>
-                                        <InputGroup.Append>
-                                            <Button variant="success" type="submit">Ответить</Button>
-                                        </InputGroup.Append>
-                                    </InputGroup>
-                                </Form>
-                                Осталось слов {this.state.questions.length - this.state.page}
-                                {this.state.right !== null ?
-                                    this.state.right ? <p className="text-success">Верно</p> :
-                                        <p className="text-danger">Неверно</p> : null}
-                            </Card.Footer>
-                        </Card>
-                    </Row>
-                </>}
-            </Container> : <div className="d-flex justify-content-center align-items-center" style={{minHeight: 374}}>
-                <Spinner size="lg" animation="border" variant="primary"/>
-            </div>)
+                                </Card.Text>
+                                <Card.Footer>
+                                    <Form onSubmit={(e) => this.submit(e)}>
+                                        <InputGroup>
+                                            <Form.Control name="answer" placeholder="Answer"/>
+                                            <InputGroup.Append>
+                                                <Button variant="success" type="submit">Ответить</Button>
+                                            </InputGroup.Append>
+                                        </InputGroup>
+                                    </Form>
+                                    Осталось слов {this.state.questions.length - this.state.page}
+                                    {this.state.right !== null ?
+                                        this.state.right ? <p className="text-success">Верно</p> :
+                                            <p className="text-danger">Неверно</p> : null}
+                                </Card.Footer>
+                            </Card>
+                        </Row>
+                    </>}
+                </Container> :
+                <div className="d-flex justify-content-center align-items-center" style={{minHeight: 374}}>
+                    <Spinner size="lg" animation="border" variant="primary"/>
+                </div>)
     }
 
 }
