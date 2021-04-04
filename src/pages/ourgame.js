@@ -69,6 +69,7 @@ class Ourgame extends React.Component {
                         word.id,
                         word.image,
                         word.textExample,
+                        word.textExampleTranslate,
                         this.props.id,
                         this.props.token,
                         0,
@@ -85,6 +86,7 @@ class Ourgame extends React.Component {
                         id: word.id,
                         example: word.textExample.replace(`${word.word}`, mask + `[${word.word.length}]`),
                         raw: word.textExample,
+                        translate: word.textExampleTranslate,
                         variant: group,
                         audio: word.audio,
                         hard: false
@@ -117,6 +119,7 @@ class Ourgame extends React.Component {
                 id: word.wordId,
                 example: word.textExample.replace(`${word.value}`, mask + `[${word.value.length}]`),
                 raw: word.textExample,
+                translate: word.textExampleTranslate,
                 variant: word.group,
                 audio: word.audio,
                 hard: word.hard
@@ -155,6 +158,7 @@ class Ourgame extends React.Component {
                 this.state.questions[this.state.page].id,
                 this.state.questions[this.state.page].img,
                 this.state.questions[this.state.page].raw,
+                this.state.questions[this.state.page].translate,
                 this.props.id,
                 this.props.token,
                 0,
@@ -173,6 +177,7 @@ class Ourgame extends React.Component {
                 this.state.questions[this.state.page].id,
                 this.state.questions[this.state.page].img,
                 this.state.questions[this.state.page].raw,
+                this.state.questions[this.state.page].translate,
                 this.props.id,
                 this.props.token,
                 1,
@@ -274,7 +279,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createWord: (type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard)),
+        createWord: (type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard)),
         getWordsByState: (group, page) => dispatch(asyncGetWords(group, page))
     }
 }
