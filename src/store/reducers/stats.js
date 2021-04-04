@@ -1,4 +1,4 @@
-import {GET_STATS} from "../actions/action_types";
+import {GET_STATS, SET_STATS} from "../actions/action_types";
 
 
 const InitialState = {
@@ -8,6 +8,11 @@ const InitialState = {
 export default function Stats(state = InitialState, action) {
     switch (action.type) {
         case GET_STATS: {
+            return {
+                statistic: action.value
+            }
+        }
+        case SET_STATS: {
             return {
                 statistic: action.value
             }
