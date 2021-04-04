@@ -71,8 +71,8 @@ class Book extends React.Component {
     }
 
     // Words
-    createWord = (type, word, word_id, image, textExample,textExampleTranslate, group = group_variant[this.state.group - 1], audio, hard) => {
-        this.props.createWord(type, group, word, word_id, image, textExample,textExampleTranslate, this.props.id, this.props.token, 0, 0, audio, hard)
+    createWord = (type, word, translate, word_id, image, textExample, textExampleTranslate, group = group_variant[this.state.group - 1], audio, hard) => {
+        this.props.createWord(type, group, word, translate, word_id, image, textExample, textExampleTranslate, this.props.id, this.props.token, 0, 0, audio, hard)
     }
 
     deleteWord = (type, wordId) => {
@@ -110,6 +110,9 @@ class Book extends React.Component {
                 {/*Choose Settings and group*/}
                 <Row className="justify-content-center">
                     {this.props.token ? <>
+                        <Link to="/games/savanna?book=true">
+                            <Button variant="dark">Саванна</Button>
+                        </Link>
                         <Link to="/games/ourgame?book=true">
                             <Button variant="dark">Наша игра</Button>
                         </Link>
@@ -218,6 +221,7 @@ class Book extends React.Component {
                                                 <Button
                                                     onClick={() => this.createWord("learn",
                                                         item.word,
+                                                        item.wordTranslate,
                                                         item.id,
                                                         item.image,
                                                         item.textExample,
@@ -335,6 +339,7 @@ class Book extends React.Component {
                                                         <Button
                                                             onClick={() => this.createWord("learn",
                                                                 item.value,
+                                                                item.translate,
                                                                 item.wordId,
                                                                 item.image,
                                                                 item.textExample,
@@ -442,7 +447,7 @@ function mapDispatchToProps(dispatch) {
         setTranslate: (value, id, token) => dispatch(asyncSetTranslate(value, id, token)),
         setActions: (value, id, token) => dispatch(asyncSetActions(value, id, token)),
         getSettings: (id, token) => dispatch(asyncGetSettings(id, token)),
-        createWord: (type, group, value, wordId, image, textExample, textExampleTranslate,userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard)),
+        createWord: (type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
         deleteWord: (type, wordId, userId, token) => dispatch(asyncDeleteWord(type, wordId, userId, token)),
     }
 }

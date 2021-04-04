@@ -1,9 +1,3 @@
 {
-  "extends": "react-app",
-  "rules": {
-    "quotes": [
-      "error",
-      "double"
-    ]
-  }
+  "extends": "react-app"
 }

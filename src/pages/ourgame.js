@@ -67,6 +67,7 @@ class Ourgame extends React.Component {
                         "learn",
                         group,
                         word.word,
+                        word.wordTranslate,
                         word.id,
                         word.image,
                         word.textExample,
@@ -83,6 +84,7 @@ class Ourgame extends React.Component {
                     }
                     words.push({
                         text: word.word,
+                        text_translate:word.wordTranslate,
                         img: word.image,
                         id: word.id,
                         example: word.textExample.replace(`${word.word}`, mask + `[${word.word.length}]`),
@@ -116,6 +118,7 @@ class Ourgame extends React.Component {
             }
             words.push({
                 text: word.value,
+                text_translate:word.translate,
                 img: word.image,
                 id: word.wordId,
                 example: word.textExample.replace(`${word.value}`, mask + `[${word.value.length}]`),
@@ -171,6 +174,7 @@ class Ourgame extends React.Component {
                 "learn",
                 group,
                 this.state.questions[this.state.page].text,
+                this.state.questions[this.state.page].text_translate,
                 this.state.questions[this.state.page].id,
                 this.state.questions[this.state.page].img,
                 this.state.questions[this.state.page].raw,
@@ -191,6 +195,7 @@ class Ourgame extends React.Component {
             this.props.createWord("learn",
                 group,
                 this.state.questions[this.state.page].text,
+                this.state.questions[this.state.page].text_translate,
                 this.state.questions[this.state.page].id,
                 this.state.questions[this.state.page].img,
                 this.state.questions[this.state.page].raw,
@@ -297,7 +302,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createWord: (type, group, value, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
+        createWord: (type, group, value, translate,wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value,translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
         getWordsByState: (group, page) => dispatch(asyncGetWords(group, page)),
         setStats: (id, token, value) => dispatch(asyncSetStats(id,token,value))
     }
