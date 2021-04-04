@@ -4,6 +4,7 @@ import Loading from "./reducers/loading"
 import Book from "./reducers/book";
 import Settings from "./reducers/settings"
 import Words from "./reducers/words"
+import Stats from "./reducers/stats";
 
 export default combineReducers(
     {
@@ -11,6 +12,7 @@ export default combineReducers(
         loading: Loading,
         book: Book,
         settings: Settings,
-        words: Words
+        words: Words,
+        stats: Stats
     });
 

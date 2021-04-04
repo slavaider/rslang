@@ -91,29 +91,34 @@ export function Register({name, email, password}) {
             password
         }
         // Create user
-        await axios.post(`${BASE_URL}users`, authData).catch((error) => {
-            dispatch(setError(error.response.data.error.errors[0].message))
+        const response = await axios.post(`${BASE_URL}users`, authData).catch((error) => {
+            if (error.response.status === 417) {
+                dispatch(setError(error.response.data))
+            } else
+                dispatch(setError(error.response.data.error.errors[0].message))
         })
         // Get Tokens
-        const token = await axios.post(`${BASE_URL}signin`, {
-            email,
-            password
-        }).catch((error) => {
-            console.error(error.response.data)
-        })
-        if (token) {
-            const expirationDate = new Date(new Date().getTime() + 3600 * 4 * 1000)
-            localStorage.setItem("token", token.data.token)
-            localStorage.setItem("refresh_token", token.data.refreshToken)
-            localStorage.setItem("user_id", token.data.userId)
-            localStorage.setItem("expirationDate", expirationDate)
-            dispatch(AuthSuccess({
+        if (response) {
+            const token = await axios.post(`${BASE_URL}signin`, {
                 email,
-                id: token.data.userId,
-                name,
-                token: token.data.token,
-                refreshToken: token.data.refreshToken,
-            }))
+                password
+            }).catch((error) => {
+                console.error(error.response.data)
+            })
+            if (token) {
+                const expirationDate = new Date(new Date().getTime() + 3600 * 4 * 1000)
+                localStorage.setItem("token", token.data.token)
+                localStorage.setItem("refresh_token", token.data.refreshToken)
+                localStorage.setItem("user_id", token.data.userId)
+                localStorage.setItem("expirationDate", expirationDate)
+                dispatch(AuthSuccess({
+                    email,
+                    id: token.data.userId,
+                    name,
+                    token: token.data.token,
+                    refreshToken: token.data.refreshToken,
+                }))
+            }
         }
         dispatch(setLoading(false))
     }

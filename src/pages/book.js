@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, ButtonGroup, Card, Col, Container, Form, ListGroup, Modal, Row, Spinner} from "react-bootstrap";
+import {Badge, Button, ButtonGroup, Card, Col, Container, Form, ListGroup, Modal, Row, Spinner} from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 import {BASE_URL} from "../config";
 import {asyncGetSettings, asyncSetActions, asyncSetTranslate} from "../store/actions/settings";
@@ -10,7 +10,13 @@ import {Link} from "react-router-dom";
 
 const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
 
+
 class Book extends React.Component {
+    stats = {
+        fail: 0,
+        success: 0,
+        numbers: 0
+    }
     state = {
         group: 1,
         page: 1,
@@ -65,8 +71,8 @@ class Book extends React.Component {
     }
 
     // Words
-    createWord = (type, word, word_id, image, textExample) => {
-        this.props.createWord(type, group_variant[this.state.group - 1], word, word_id, image, textExample, this.props.id, this.props.token)
+    createWord = (type, word, word_id, image, textExample, group = group_variant[this.state.group - 1], audio, hard) => {
+        this.props.createWord(type, group, word, word_id, image, textExample, this.props.id, this.props.token, 0, 0, audio, hard)
     }
 
     deleteWord = (type, wordId) => {
@@ -76,6 +82,14 @@ class Book extends React.Component {
         return words.filter((item) => !this.props.deleted.find((del) => del.wordId === item.id)).map((item) => {
             const copy = item
             copy.hard = !!this.props.hard.find((hard) => hard.wordId === item.id);
+            const learn = this.props.learning.find((learn) => learn.wordId === item.id)
+            if (learn) {
+                copy.fail = learn.fail
+                copy.success = learn.success
+                this.stats.fail += learn.fail
+                this.stats.success += learn.success
+                this.stats.numbers += 1
+            }
             return copy
         })
     }
@@ -84,6 +98,11 @@ class Book extends React.Component {
     render() {
         let filterWords = []
         if (!this.state.loading) {
+            this.stats = {
+                fail: 0,
+                success: 0,
+                numbers: 0
+            }
             filterWords = this.filterWords(this.props.words)
         }
         return (
@@ -92,7 +111,7 @@ class Book extends React.Component {
                 <Row className="justify-content-center">
                     {this.props.token ? <>
                         <Link to="/games/ourgame?book=true">
-                            <Button>our game</Button>
+                            <Button variant="dark">Наша игра</Button>
                         </Link>
                         <Button variant="dark" onClick={() => this.settingsShow()}>Настройки</Button>
                         <Modal
@@ -164,7 +183,12 @@ class Book extends React.Component {
                                             <audio controls={true} src={`${BASE_URL}${item.audio}`}/>
                                         </span>
                                         </Card.Header>
+
                                         <Card.Body>
+                                            {typeof item.success === "number" ? <Card.Text>
+                                                Отгадано: {item.success} <br/>
+                                                Не отгадано: {item.fail}
+                                            </Card.Text> : null}
                                             {item.hard ? <Card.Text>
                                                 Сложное слово
                                             </Card.Text> : null}
@@ -192,10 +216,18 @@ class Book extends React.Component {
                                         {this.props.actions && this.props.token ? <Card.Subtitle className="ml-2 mb-2">
                                             <ButtonGroup>
                                                 <Button
-                                                    onClick={() => this.createWord("hard", item.word, item.id, item.image, item.textExample)}
+                                                    onClick={() => this.createWord("learn",
+                                                        item.word,
+                                                        item.id,
+                                                        item.image,
+                                                        item.textExample,
+                                                        group_variant[this.state.group - 1],
+                                                        item.audio,
+                                                        true
+                                                    )}
                                                     size="sm">Сложное слово</Button>
                                                 <Button variant={item.hard ? "danger" : "warning"}
-                                                        onClick={() => this.createWord("delete", item.word, item.id, item.image, item.textExample)}
+                                                        onClick={() => this.createWord("delete", item.word, item.id)}
                                                         size="sm">Удалить</Button>
                                             </ButtonGroup>
                                         </Card.Subtitle> : null}
@@ -234,6 +266,12 @@ class Book extends React.Component {
                 </Row>
                 {this.props.token ?
                     <>
+                        {/*Stats*/}
+                        <Row className="justify-content-center align-items-center">
+                            Количество изучаемых слов: {this.stats.numbers}&nbsp;
+                            Верно отгадано: {this.stats.success}&nbsp;
+                            Неверно отгадано: {this.stats.fail}
+                        </Row>
                         {/*Learning Words*/}
                         <Row className="justify-content-center align-items-center">
                             <h2>Изучаемые слова</h2>
@@ -242,12 +280,17 @@ class Book extends React.Component {
                                     <ListGroup.Item>Нет изучаемых слов</ListGroup.Item> :
                                     <ListGroup>
                                         {this.props.learning.slice((this.state.learning_page - 1) * 20, this.state.learning_page * 20).map((item) => {
-                                            return (
-                                                <ListGroup.Item key={"learn " + item.wordId} variant={item.group}>
-                                                    {item.value} <span>fail:{item.fail}/success:{item.success}</span>
-                                                </ListGroup.Item>
-                                            )
-                                        }
+                                                return (
+                                                    <ListGroup.Item key={"learn " + item.wordId} variant={item.group}>
+                                                        <div className="d-flex justify-content-between">
+                                                            {item.value}
+                                                            <p>Отгадано: <Badge variant="success">{item.success}</Badge> Не
+                                                                отгадано: <Badge variant="danger">{item.fail}</Badge></p>
+                                                        </div>
+
+                                                    </ListGroup.Item>
+                                                )
+                                            }
                                         )}
                                     </ListGroup>
                                 }
@@ -288,9 +331,10 @@ class Book extends React.Component {
                                                 return (
                                                     <ListGroup.Item key={"hard " + item.wordId} variant={item.group}>
                                                         {item.value}
-                                                        <Button onClick={() => this.deleteWord(item.type, item.wordId)}
-                                                                variant="success"
-                                                                className="float-right"
+                                                        <Button
+                                                            onClick={() => this.createWord("learn", item.value, item.wordId, item.image, item.textExample, item.group, item.audio, false)}
+                                                            variant="success"
+                                                            className="float-right"
                                                         >
                                                             Восстановить
                                                         </Button>
@@ -389,7 +433,7 @@ function mapDispatchToProps(dispatch) {
         setTranslate: (value, id, token) => dispatch(asyncSetTranslate(value, id, token)),
         setActions: (value, id, token) => dispatch(asyncSetActions(value, id, token)),
         getSettings: (id, token) => dispatch(asyncGetSettings(id, token)),
-        createWord: (type, group, value, wordId, image, textExample, userId, token) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, userId, token)),
+        createWord: (type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard)),
         deleteWord: (type, wordId, userId, token) => dispatch(asyncDeleteWord(type, wordId, userId, token)),
     }
 }
