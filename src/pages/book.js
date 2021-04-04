@@ -71,8 +71,8 @@ class Book extends React.Component {
     }
 
     // Words
-    createWord = (type, word, word_id, image, textExample, group = group_variant[this.state.group - 1], audio, hard) => {
-        this.props.createWord(type, group, word, word_id, image, textExample, this.props.id, this.props.token, 0, 0, audio, hard)
+    createWord = (type, word, word_id, image, textExample,textExampleTranslate, group = group_variant[this.state.group - 1], audio, hard) => {
+        this.props.createWord(type, group, word, word_id, image, textExample,textExampleTranslate, this.props.id, this.props.token, 0, 0, audio, hard)
     }
 
     deleteWord = (type, wordId) => {
@@ -221,6 +221,7 @@ class Book extends React.Component {
                                                         item.id,
                                                         item.image,
                                                         item.textExample,
+                                                        item.textExampleTranslate,
                                                         group_variant[this.state.group - 1],
                                                         item.audio,
                                                         true
@@ -332,7 +333,15 @@ class Book extends React.Component {
                                                     <ListGroup.Item key={"hard " + item.wordId} variant={item.group}>
                                                         {item.value}
                                                         <Button
-                                                            onClick={() => this.createWord("learn", item.value, item.wordId, item.image, item.textExample, item.group, item.audio, false)}
+                                                            onClick={() => this.createWord("learn",
+                                                                item.value,
+                                                                item.wordId,
+                                                                item.image,
+                                                                item.textExample,
+                                                                item.textExampleTranslate,
+                                                                item.group,
+                                                                item.audio,
+                                                                false)}
                                                             variant="success"
                                                             className="float-right"
                                                         >
@@ -433,7 +442,7 @@ function mapDispatchToProps(dispatch) {
         setTranslate: (value, id, token) => dispatch(asyncSetTranslate(value, id, token)),
         setActions: (value, id, token) => dispatch(asyncSetActions(value, id, token)),
         getSettings: (id, token) => dispatch(asyncGetSettings(id, token)),
-        createWord: (type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard)),
+        createWord: (type, group, value, wordId, image, textExample, textExampleTranslate,userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard)),
         deleteWord: (type, wordId, userId, token) => dispatch(asyncDeleteWord(type, wordId, userId, token)),
     }
 }

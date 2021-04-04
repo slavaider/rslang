@@ -3,7 +3,7 @@ import axios from "axios";
 import {BASE_URL} from "../../config";
 
 
-export const createWord = (type, group, value, wordId, image, textExample, success, fail, audio, hard) => {
+export const createWord = (type, group, value, wordId, image, textExample,textExampleTranslate, success, fail, audio, hard) => {
     return {
         type: CREATE_USER_WORD,
         wordType: type,
@@ -14,6 +14,7 @@ export const createWord = (type, group, value, wordId, image, textExample, succe
             type,
             image,
             textExample,
+            textExampleTranslate,
             fail,
             success,
             audio,
@@ -28,7 +29,7 @@ export const deleteWord = (type, wordId) => {
         wordId
     }
 }
-export const updateWord = (type, group, value, wordId, image, textExample, fail, success, audio, hard) => {
+export const updateWord = (type, group, value, wordId, image, textExample,textExampleTranslate, fail, success, audio, hard) => {
     return {
         type: UPDATE_USER_WORD,
         wordType: type,
@@ -39,6 +40,7 @@ export const updateWord = (type, group, value, wordId, image, textExample, fail,
             type,
             image,
             textExample,
+            textExampleTranslate,
             fail,
             success,
             audio,
@@ -47,7 +49,7 @@ export const updateWord = (type, group, value, wordId, image, textExample, fail,
     }
 }
 
-export const asyncCreateWord = (type, group, value, wordId, image, textExample, userId, token, fail, success, audio, hard) => {
+export const asyncCreateWord = (type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard) => {
     return async dispatch => {
         // Check existing word
         const response = await axios.get(`${BASE_URL}users/${userId}/words/${wordId}`,
@@ -65,6 +67,7 @@ export const asyncCreateWord = (type, group, value, wordId, image, textExample, 
                         group,
                         image,
                         textExample,
+                        textExampleTranslate,
                         fail,
                         success,
                         audio,
@@ -80,7 +83,7 @@ export const asyncCreateWord = (type, group, value, wordId, image, textExample, 
                         }
                     )
                     console.clear();
-                    dispatch(createWord(type, group, value, wordId, image, textExample, fail, success, audio, hard))
+                    dispatch(createWord(type, group, value, wordId, image, textExample,textExampleTranslate, fail, success, audio, hard))
                 }
             })
         if (typeof response !== "undefined") {
@@ -92,6 +95,7 @@ export const asyncCreateWord = (type, group, value, wordId, image, textExample, 
                     group,
                     image,
                     textExample,
+                    textExampleTranslate,
                     fail,
                     success,
                     audio,
@@ -110,7 +114,7 @@ export const asyncCreateWord = (type, group, value, wordId, image, textExample, 
                     }
                 }
             )
-            dispatch(updateWord(type, group, value, wordId, image, textExample, response.data.optional.fail + fail, response.data.optional.success + success, audio, hard))
+            dispatch(updateWord(type, group, value, wordId, image, textExample, textExampleTranslate,response.data.optional.fail + fail, response.data.optional.success + success, audio, hard))
         }
     }
 }
@@ -158,6 +162,7 @@ export const asyncGetUserWords = (userId, token) => {
                     type: item.optional.type,
                     image: item.optional.image,
                     textExample: item.optional.textExample,
+                    textExampleTranslate: item.optional.textExampleTranslate,
                     fail: item.optional.fail,
                     success: item.optional.success,
                     audio: item.optional.audio,
