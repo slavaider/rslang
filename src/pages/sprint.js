@@ -65,8 +65,10 @@ function Sprint() {
             clearInterval(interval);
         }
         return () => clearInterval(interval);
+        // eslint-disable-next-line
     }, [timerOn]);
 
+    // eslint-disable-next-line
     useEffect(() => {
         if (timer === 0) {
             start.style.visibility = "visible";

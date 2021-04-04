@@ -5,6 +5,7 @@ import {Link} from "react-router-dom"
 import {BASE_URL} from "../config";
 import {asyncGetWords} from "../store/actions/book";
 import {connect} from "react-redux";
+import {asyncSetStats} from "../store/actions/stats";
 
 
 const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
@@ -139,6 +140,20 @@ class Ourgame extends React.Component {
         this.setState({level: group})
     }
 
+    answer = (game_type, value) => {
+        const copy = this.props.stats.optional[new Date().toLocaleDateString()]
+        copy.wordPerDay += 1
+        const game = copy[game_type]
+        game.count += 1
+        if (value) {
+            game.success += 1
+            game.series += 1
+        } else {
+            game.series = 0
+        }
+        this.props.setStats(this.props.id, this.props.token, copy)
+    }
+
     submit = (e) => {
         e.preventDefault();
         let group = group_variant[+localStorage.getItem("group") - 1]
@@ -147,6 +162,7 @@ class Ourgame extends React.Component {
         }
         const answer = e.target.answer.value.toLowerCase();
         if (answer === this.state.questions[this.state.page].text) {
+            this.answer("our",true)
             this.setState((prevState) => ({
                 page: prevState.page + 1,
                 right: true
@@ -167,6 +183,7 @@ class Ourgame extends React.Component {
                 this.state.questions[this.state.page].hard
             )
         } else {
+            this.answer("our",false)
             this.setState((prevState) => ({
                 page: prevState.page + 1,
                 right: false
@@ -215,7 +232,7 @@ class Ourgame extends React.Component {
                 </>
             )
         } else
-            return (this.state.loading ? <Container>
+            return ((this.state.loading && this.state.questions.length >= 20 )|| this.state.block ? <Container>
                     {this.state.endgame ? <>
                         <h3 className="text-center">Конец игры <span>
                      <ButtonGroup>
@@ -274,13 +291,15 @@ function mapStateToProps(state) {
         words: state.book.words,
         id: state.auth.id,
         token: state.auth.token,
+        stats: state.stats.statistic,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        createWord: (type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard)),
-        getWordsByState: (group, page) => dispatch(asyncGetWords(group, page))
+        createWord: (type, group, value, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
+        getWordsByState: (group, page) => dispatch(asyncGetWords(group, page)),
+        setStats: (id, token, value) => dispatch(asyncSetStats(id,token,value))
     }
 }
 
