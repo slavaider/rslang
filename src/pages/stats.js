@@ -5,12 +5,16 @@ import {Container, ListGroupItem, Spinner} from "react-bootstrap";
 class Stats extends React.Component {
 
 
+    getPercent = (value) => {
+        const success = value.audio.success + value.savanna.success + value.sprint.success + value.our.success;
+        return ((success / value.wordPerDay) * 100).toFixed(2)
+    }
+
     render() {
-        console.log(this.props.stats)
         return (
             <Container className="text-center">
                 {this.props.stats ? <>
-                    <h1>Краткосрочная статистика</h1>
+                    <h1>Статистика</h1>
                     {Object.keys(this.props.stats.optional).map((date) => {
                         return (
                             <React.Fragment key={date}>
@@ -19,7 +23,10 @@ class Stats extends React.Component {
                                     return (
                                         <React.Fragment key={key}>
                                             {key === "wordPerDay" ?
-                                                <h4>Слов в день:{this.props.stats.optional[date][key]}</h4> :
+                                                <>
+                                                    <h4>Процент правильных
+                                                        ответов: {this.getPercent(this.props.stats.optional[date])}%</h4>
+                                                    <h4>Слов в день:{this.props.stats.optional[date][key]}</h4></> :
                                                 <ListGroupItem variant="info"
                                                                className="d-flex justify-content-between">
                                                     <div>
