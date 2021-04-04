@@ -113,7 +113,7 @@ class Header extends React.Component {
             </div>
         );
     }
-}
+	}
 
 function mapDispatchToProps(dispatch) {
     return {
@@ -124,10 +124,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    return {
-        name: state.auth.name,
-        loading: state.loading.loading
-    }
+  return {
+    name: state.auth.name,
+    loading: state.loading.loading,
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
