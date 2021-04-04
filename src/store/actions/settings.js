@@ -56,7 +56,6 @@ export const asyncSetActions = (value, id, token) => {
 }
 export const asyncGetSettings = (id, token) => {
     return async dispatch => {
-
         const response = await axios.get(`${BASE_URL}users/${id}/settings`, {
             headers: {
                 "Authorization": `Bearer ${token}`,

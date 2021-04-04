@@ -10,7 +10,13 @@ import {Link} from "react-router-dom";
 
 const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
 
+
 class Book extends React.Component {
+    stats = {
+        fail: 0,
+        success: 0,
+        numbers: 0
+    }
     state = {
         group: 1,
         page: 1,
@@ -80,6 +86,9 @@ class Book extends React.Component {
             if (learn) {
                 copy.fail = learn.fail
                 copy.success = learn.success
+                this.stats.fail += learn.fail
+                this.stats.success += learn.success
+                this.stats.numbers += 1
             }
             return copy
         })
@@ -89,6 +98,11 @@ class Book extends React.Component {
     render() {
         let filterWords = []
         if (!this.state.loading) {
+            this.stats = {
+                fail: 0,
+                success: 0,
+                numbers: 0
+            }
             filterWords = this.filterWords(this.props.words)
         }
         return (
@@ -252,6 +266,12 @@ class Book extends React.Component {
                 </Row>
                 {this.props.token ?
                     <>
+                        {/*Stats*/}
+                        <Row className="justify-content-center align-items-center">
+                            Количество изучаемых слов: {this.stats.numbers}&nbsp;
+                            Верно отгадано: {this.stats.success}&nbsp;
+                            Неверно отгадано: {this.stats.fail}
+                        </Row>
                         {/*Learning Words*/}
                         <Row className="justify-content-center align-items-center">
                             <h2>Изучаемые слова</h2>
@@ -264,7 +284,8 @@ class Book extends React.Component {
                                                     <ListGroup.Item key={"learn " + item.wordId} variant={item.group}>
                                                         <div className="d-flex justify-content-between">
                                                             {item.value}
-                                                            <p>Отгадано: <Badge variant="success">{item.success}</Badge> Не отгадано: <Badge variant="danger">{item.fail}</Badge></p>
+                                                            <p>Отгадано: <Badge variant="success">{item.success}</Badge> Не
+                                                                отгадано: <Badge variant="danger">{item.fail}</Badge></p>
                                                         </div>
 
                                                     </ListGroup.Item>
