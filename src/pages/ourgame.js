@@ -215,7 +215,7 @@ class Ourgame extends React.Component {
                 </>
             )
         } else
-            return (this.state.loading ? <Container>
+            return ((this.state.loading && this.state.questions.length >= 20 )|| this.state.block ? <Container>
                     {this.state.endgame ? <>
                         <h3 className="text-center">Конец игры <span>
                      <ButtonGroup>
@@ -279,7 +279,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createWord: (type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample,textExampleTranslate, userId, token, fail, success, audio, hard)),
+        createWord: (type, group, value, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
         getWordsByState: (group, page) => dispatch(asyncGetWords(group, page))
     }
 }
