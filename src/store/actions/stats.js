@@ -54,17 +54,19 @@ const defaultStat = async (id, token) => {
 
 export const asyncGetStats = (id, token) => {
     return async dispatch => {
-        const response = await axios.get(`${BASE_URL}users/${id}/statistics`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            }
-        }).catch(async (error) => {
-            if (error) {
-                dispatch(getStats(await defaultStat(id, token)))
-            }
-        })
-        if (response)
-            dispatch(getStats(response.data))
+        if (id) {
+            const response = await axios.get(`${BASE_URL}users/${id}/statistics`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                }
+            }).catch(async (error) => {
+                if (error) {
+                    dispatch(getStats(await defaultStat(id, token)))
+                }
+            })
+            if (response)
+                dispatch(getStats(response.data))
+        }
     }
 }
 export const asyncSetStats = (id, token, value) => {
