@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, ButtonGroup, Container, Row, Spinner} from "react-bootstrap";
+import {Button, ButtonGroup, Container, Row} from "react-bootstrap";
 import "../styles/audiocall.css";
 import phones from "../assets/icons/phones.svg";
 import speaker from "../assets/icons/speaker.svg";
@@ -9,8 +9,8 @@ import {asyncGetWords} from "../store/actions/book";
 import {asyncSetStats} from "../store/actions/stats";
 import {connect} from "react-redux";
 import {BASE_URL} from "../config";
-
-const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
+import {group_variant, shuffle} from "../utils";
+import Spin from "../components/Spin/Spin";
 
 
 class AudioCall extends React.Component {
@@ -27,14 +27,11 @@ class AudioCall extends React.Component {
     }
 
     componentDidMount() {
-        const query = new URLSearchParams(this.props.location.search)
-        const from = !!query.get("book")
-        if (from && this.props.learning.length !== 0) {
+        if (this.state.from && this.props.learning.length !== 0) {
             this.getFromLearning()
         } else {
             this.getFromWords()
         }
-        this.setState({from})
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -56,33 +53,13 @@ class AudioCall extends React.Component {
                     .map((item) => {
                         return item.text_translate
                     })
-                const shuffled = this.shuffle(copy)
+                const shuffled = shuffle(copy)
                 const four = [shuffled[0], shuffled[1], shuffled[2], shuffled[3], this.state.questions[this.state.page].text_translate]
-                const final = this.shuffle(four)
+                const final = shuffle(four)
                 this.setState({loading: true, shuffle: final})
             }
         }
     }
-
-    shuffle = (array) => {
-        let currentIndex = array.length, temporaryValue, randomIndex;
-
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-
-        return array;
-    }
-
 
     getFromWords = () => {
         const words = []
@@ -142,7 +119,7 @@ class AudioCall extends React.Component {
 
     getFromLearning = () => {
         const words = []
-        this.shuffle(this.props.learning).every((word) => {
+        shuffle(this.props.learning).every((word) => {
             let mask = ""
             for (let i = 0; i < word.value.length; i++) {
                 mask += "*"
@@ -198,9 +175,9 @@ class AudioCall extends React.Component {
                 .map((item) => {
                     return item.text_translate
                 })
-            const shuffled = this.shuffle(copy)
+            const shuffled = shuffle(copy)
             const four = [shuffled[0], shuffled[1], shuffled[2], shuffled[3], this.state.questions[this.state.page + 1].text_translate]
-            const final = this.shuffle(four)
+            const final = shuffle(four)
             this.setState({shuffle: final})
         }
     }
@@ -317,9 +294,7 @@ class AudioCall extends React.Component {
                             <img alt="audiocall" src={phones} className="audiocall__bg"/>
                         </div>}
                 </Container> :
-                <div className="d-flex justify-content-center align-items-center" style={{minHeight: 374}}>
-                    <Spinner size="lg" animation="border" variant="primary"/>
-                </div>)
+                <Spin/>)
     }
 }
 

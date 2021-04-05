@@ -1,14 +1,13 @@
 import React from "react";
-import {Button, ButtonGroup, Card, Container, Form, InputGroup, Row, Spinner} from "react-bootstrap";
+import {Button, ButtonGroup, Card, Container, Form, InputGroup, Row} from "react-bootstrap";
 import {asyncCreateWord} from "../store/actions/words";
 import {Link} from "react-router-dom"
 import {BASE_URL} from "../config";
 import {asyncGetWords} from "../store/actions/book";
 import {connect} from "react-redux";
 import {asyncSetStats} from "../store/actions/stats";
-
-
-const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
+import Spin from "../components/Spin/Spin";
+import {group_variant, shuffle} from "../utils";
 
 
 class Ourgame extends React.Component {
@@ -106,28 +105,10 @@ class Ourgame extends React.Component {
         this.setState({questions: [...this.state.questions, ...words]})
     }
 
-    shuffle = (array) => {
-        let currentIndex = array.length, temporaryValue, randomIndex;
-
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-
-        return array;
-    }
 
     getFromLearning = () => {
         const words = []
-        this.shuffle(this.props.learning).every((word) => {
+        shuffle(this.props.learning).every((word) => {
             let mask = ""
             for (let i = 0; i < word.value.length; i++) {
                 mask += "*"
@@ -230,8 +211,6 @@ class Ourgame extends React.Component {
     }
 
     render() {
-        console.log("from ", this.state.from)
-        console.log("block ", this.state.block)
         if (this.state.level === null && !this.state.from) {
             return (
                 <>
@@ -300,9 +279,7 @@ class Ourgame extends React.Component {
                         </Row>
                     </>}
                 </Container> :
-                <div className="d-flex justify-content-center align-items-center" style={{minHeight: 374}}>
-                    <Spinner size="lg" animation="border" variant="primary"/>
-                </div>)
+                <Spin/>)
     }
 
 }

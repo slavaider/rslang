@@ -8,8 +8,8 @@ import {asyncGetWords} from "../store/actions/book";
 import {asyncSetStats} from "../store/actions/stats";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
+import {group_variant, shuffle} from "../utils";
 
-const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
 
 export function hearts(n) {
     const hearts = [
@@ -64,14 +64,11 @@ class Savanna extends React.Component {
     }
 
     componentDidMount() {
-        const query = new URLSearchParams(this.props.location.search)
-        const from = !!query.get("book")
-        if (from && this.props.learning.length !== 0) {
+        if (this.state.from && this.props.learning.length !== 0) {
             this.getFromLearning()
         } else {
             this.getFromWords()
         }
-        this.setState({from})
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -93,31 +90,12 @@ class Savanna extends React.Component {
                     .map((item) => {
                         return item.text_translate
                     })
-                const shuffled = this.shuffle(copy)
+                const shuffled = shuffle(copy)
                 const four = [shuffled[0], shuffled[1], shuffled[2], this.state.questions[this.state.page].text_translate]
-                const final = this.shuffle(four)
+                const final = shuffle(four)
                 this.setState({loading: true, shuffle: final})
             }
         }
-    }
-
-    shuffle = (array) => {
-        let currentIndex = array.length, temporaryValue, randomIndex;
-
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-
-        return array;
     }
 
 
@@ -179,7 +157,7 @@ class Savanna extends React.Component {
 
     getFromLearning = () => {
         const words = []
-        this.shuffle(this.props.learning).every((word) => {
+        shuffle(this.props.learning).every((word) => {
             let mask = ""
             for (let i = 0; i < word.value.length; i++) {
                 mask += "*"
@@ -231,9 +209,9 @@ class Savanna extends React.Component {
                 .map((item) => {
                     return item.text_translate
                 })
-            const shuffled = this.shuffle(copy)
+            const shuffled = shuffle(copy)
             const four = [shuffled[0], shuffled[1], shuffled[2], this.state.questions[this.state.page + 1].text_translate]
-            const final = this.shuffle(four)
+            const final = shuffle(four)
             this.setState({shuffle: final})
         }
     }

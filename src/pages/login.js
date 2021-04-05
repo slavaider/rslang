@@ -1,7 +1,8 @@
 import React from "react";
-import {Badge, Button, FormControl, InputGroup, Modal, Spinner} from "react-bootstrap";
+import {Badge, Button, FormControl, InputGroup, Modal} from "react-bootstrap";
 import {Login} from "../store/actions/auth";
 import {connect} from "react-redux";
+import Spin from "../components/Spin/Spin";
 
 class Signin extends React.Component {
     state = {
@@ -27,8 +28,9 @@ class Signin extends React.Component {
         }
         this.props.Login(user)
     }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevProps.name !== this.props.name) {
+        if (prevProps.name !== this.props.name) {
             this.close()
         }
     }
@@ -79,9 +81,7 @@ class Signin extends React.Component {
                             </Button>
                         </Modal.Footer>
                     </form> :
-                    <div className="d-flex justify-content-center align-items-center" style={{minHeight: 374}}>
-                        <Spinner size="lg" animation="border" variant="primary"/>
-                    </div>
+                    <Spin/>
                 }
             </Modal>
         );

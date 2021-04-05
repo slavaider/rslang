@@ -1,15 +1,14 @@
 import React from "react";
-import {Badge, Button, ButtonGroup, Card, Col, Container, Form, ListGroup, Modal, Row, Spinner} from "react-bootstrap";
+import {Badge, Button, ButtonGroup, Card, Col, Container, Form, ListGroup, Modal, Row} from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 import {BASE_URL} from "../config";
-import {asyncGetSettings, asyncSetActions, asyncSetTranslate} from "../store/actions/settings";
+import {asyncSetActions, asyncSetTranslate} from "../store/actions/settings";
 import {asyncGetWords} from "../store/actions/book";
 import {asyncCreateWord, asyncDeleteWord} from "../store/actions/words";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
-
-const group_variant = ["dark", "info", "success", "primary", "secondary", "danger"]
-
+import Spin from "../components/Spin/Spin";
+import {group_variant} from "../utils";
 
 class Book extends React.Component {
     stats = {
@@ -45,9 +44,6 @@ class Book extends React.Component {
         }
         if (prevProps.deleted !== this.props.deleted) {
             this.setState({loading: false})
-        }
-        if (prevProps.id !== this.props.id) {
-            this.props.getSettings(this.props.id, this.props.token)
         }
     }
 
@@ -242,9 +238,7 @@ class Book extends React.Component {
                                     </Card>
                                 )
                             })}
-                    </Row> : <div className="d-flex justify-content-center align-items-center" style={{minHeight: 374}}>
-                        <Spinner size="lg" animation="border" variant="primary"/>
-                    </div>}
+                    </Row> : <Spin/>}
                 {/*Pagination for Book*/}
                 <Row className="justify-content-center align-items-center">
                     <ReactPaginate
@@ -449,7 +443,6 @@ function mapDispatchToProps(dispatch) {
         getWordsByState: (group, page) => dispatch(asyncGetWords(group, page)),
         setTranslate: (value, id, token) => dispatch(asyncSetTranslate(value, id, token)),
         setActions: (value, id, token) => dispatch(asyncSetActions(value, id, token)),
-        getSettings: (id, token) => dispatch(asyncGetSettings(id, token)),
         createWord: (type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
         deleteWord: (type, wordId, userId, token) => dispatch(asyncDeleteWord(type, wordId, userId, token)),
     }
