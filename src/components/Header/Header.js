@@ -3,7 +3,7 @@ import {Button, Container, Form, Nav, Navbar, NavDropdown, Spinner} from "react-
 import "./Header.css";
 import {autoLogin, logout} from "../../store/actions/auth";
 import {connect} from "react-redux";
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, withRouter} from "react-router-dom";
 import {asyncGetUserWords} from "../../store/actions/words";
 import {asyncGetStats} from "../../store/actions/stats";
 import {asyncGetSettings} from "../../store/actions/settings";
@@ -141,4 +141,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));
