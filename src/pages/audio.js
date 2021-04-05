@@ -21,7 +21,7 @@ class AudioCall extends React.Component {
         page: 0,
         endgame: false,
         block: false,
-        from: null,
+        from: !!new URLSearchParams(this.props.location.search).get("book"),
         level: null,
         loading: false
     }

@@ -235,7 +235,7 @@ class Book extends React.Component {
                                                     )}
                                                     size="sm">Сложное слово</Button>
                                                 <Button variant={item.hard ? "danger" : "warning"}
-                                                        onClick={() => this.createWord("delete", item.word, item.id)}
+                                                        onClick={() => this.createWord("delete", item.word, item.wordTranslate, item.id)}
                                                         size="sm">Удалить</Button>
                                             </ButtonGroup>
                                         </Card.Subtitle> : null}
