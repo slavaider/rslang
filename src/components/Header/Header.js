@@ -25,6 +25,11 @@ class Header extends React.Component {
         }
     }
 
+    Logout = () => {
+        this.props.history.push("/")
+        this.props.logout()
+    }
+
 
     render() {
         return (
@@ -90,7 +95,7 @@ class Header extends React.Component {
                                     <>
                                         <h6>{this.props.name}</h6>&nbsp;
                                         <Button variant="outline-danger" className="btn"
-                                                onClick={() => this.props.logout()}>
+                                                onClick={() => this.Logout()}>
                                             Выйти
                                         </Button>
                                     </>

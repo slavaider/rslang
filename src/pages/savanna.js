@@ -58,7 +58,7 @@ class Savanna extends React.Component {
         lives: 5,
         endgame: false,
         block: false,
-        from: null,
+        from: !!new URLSearchParams(this.props.location.search).get("book"),
         level: null,
         loading: false
     }
