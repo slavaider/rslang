@@ -6,6 +6,7 @@ import {connect} from "react-redux";
 import {Link, NavLink} from "react-router-dom";
 import {asyncGetUserWords} from "../../store/actions/words";
 import {asyncGetStats} from "../../store/actions/stats";
+import {asyncGetSettings} from "../../store/actions/settings";
 
 class Header extends React.Component {
     componentDidMount() {
@@ -22,6 +23,7 @@ class Header extends React.Component {
         if (prevProps.name !== this.props.name) {
             this.props.getUserWords(localStorage.getItem("user_id"), localStorage.getItem("token"))
             this.props.getStats(localStorage.getItem("user_id"), localStorage.getItem("token"));
+            this.props.getSettings(localStorage.getItem("user_id"), localStorage.getItem("token"))
         }
     }
 
@@ -127,7 +129,8 @@ function mapDispatchToProps(dispatch) {
         autoLogin: (id, token) => dispatch(autoLogin(id, token)),
         logout: () => dispatch(logout()),
         getUserWords: (id, token) => dispatch(asyncGetUserWords(id, token)),
-        getStats: (id, token) => dispatch(asyncGetStats(id, token))
+        getStats: (id, token) => dispatch(asyncGetStats(id, token)),
+        getSettings: (id, token) => dispatch(asyncGetSettings(id, token)),
     }
 }
 

@@ -124,7 +124,6 @@ export const asyncCreateWord = (type, group, value,translate, wordId, image, tex
 }
 
 export const asyncDeleteWord = (type, wordId, userId, token) => {
-    console.log(type,wordId, userId,token)
     return async dispatch => {
         await axios.delete(`${BASE_URL}users/${userId}/words/${wordId}`,
             {

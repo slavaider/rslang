@@ -1,6 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Container, ListGroupItem, Spinner} from "react-bootstrap";
+import {Container, ListGroupItem} from "react-bootstrap";
+import Spin from "../components/Spin/Spin";
 
 class Stats extends React.Component {
 
@@ -51,9 +52,7 @@ class Stats extends React.Component {
                             </React.Fragment>
                         )
                     })}
-                </> : <div className="d-flex justify-content-center align-items-center" style={{minHeight: 374}}>
-                    <Spinner size="lg" animation="border" variant="primary"/>
-                </div>}
+                </> : <Spin/>}
             </Container>
         )
     }
