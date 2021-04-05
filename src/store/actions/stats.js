@@ -16,8 +16,10 @@ export const setStats = (value) => {
     }
 }
 const defaultStat = async (id, token, prev = null) => {
-    const response = await axios.put(`${BASE_URL}users/${id}/statistics`,
-        {
+
+
+    if (prev) {
+        const update = {
             optional: {
                 ...prev.optional,
                 [new Date().toLocaleDateString()]: {
@@ -44,13 +46,52 @@ const defaultStat = async (id, token, prev = null) => {
                     },
                 }
             }
-        },
-        {
-            headers: {
-                "Authorization": `Bearer ${token}`,
+        }
+        const response = await axios.put(`${BASE_URL}users/${id}/statistics`,
+            update,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                }
+            })
+        return response.data
+    } else {
+        const data = {
+            optional: {
+                [new Date().toLocaleDateString()]: {
+                    wordPerDay: 0,
+                    savanna: {
+                        count: 0,
+                        success: 0,
+                        series: 0
+                    },
+                    sprint: {
+                        count: 0,
+                        success: 0,
+                        series: 0
+                    },
+                    audio: {
+                        count: 0,
+                        success: 0,
+                        series: 0
+                    },
+                    our: {
+                        count: 0,
+                        success: 0,
+                        series: 0
+                    },
+                }
             }
-        })
-    return response.data
+        }
+        const response = await axios.put(`${BASE_URL}users/${id}/statistics`,
+            data,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                }
+            })
+        return response.data
+    }
 }
 
 
