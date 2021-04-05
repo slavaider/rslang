@@ -19,21 +19,18 @@ class Ourgame extends React.Component {
         right: null,
         endgame: false,
         block: false,
-        from: null,
+        from: !!new URLSearchParams(this.props.location.search).get("book"),
         level: null,
         loading: false
     }
 
 
     componentDidMount() {
-        const query = new URLSearchParams(this.props.location.search)
-        const from = !!query.get("book")
-        if (from && this.props.learning.length !== 0) {
+        if (this.state.from && this.props.learning.length !== 0) {
             this.getFromLearning()
         } else {
             this.getFromWords()
         }
-        this.setState({from})
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -84,7 +81,7 @@ class Ourgame extends React.Component {
                     }
                     words.push({
                         text: word.word,
-                        text_translate:word.wordTranslate,
+                        text_translate: word.wordTranslate,
                         img: word.image,
                         id: word.id,
                         example: word.textExample.replace(`${word.word}`, mask + `[${word.word.length}]`),
@@ -98,8 +95,8 @@ class Ourgame extends React.Component {
             }
         )
         if (this.state.from) {
-            if (this.state.questions + words.length < 20) {
-                if (+localStorage.getItem("page") > 1) {
+            if (this.state.questions.length + words.length < 20) {
+                if (+localStorage.getItem("page") !== 1) {
                     this.props.getWordsByState(+localStorage.getItem("group"), +localStorage.getItem("page") - 1)
                     localStorage.setItem("page", (+localStorage.getItem("page") - 1).toString())
                 } else
@@ -130,14 +127,14 @@ class Ourgame extends React.Component {
 
     getFromLearning = () => {
         const words = []
-       this.shuffle(this.props.learning).every((word) => {
+        this.shuffle(this.props.learning).every((word) => {
             let mask = ""
             for (let i = 0; i < word.value.length; i++) {
                 mask += "*"
             }
             words.push({
                 text: word.value,
-                text_translate:word.translate,
+                text_translate: word.translate,
                 img: word.image,
                 id: word.wordId,
                 example: word.textExample.replace(`${word.value}`, mask + `[${word.value.length}]`),
@@ -184,7 +181,7 @@ class Ourgame extends React.Component {
         }
         const answer = e.target.answer.value.toLowerCase();
         if (answer === this.state.questions[this.state.page].text) {
-            this.answer("our",true)
+            this.answer("our", true)
             this.setState((prevState) => ({
                 page: prevState.page + 1,
                 right: true
@@ -206,7 +203,7 @@ class Ourgame extends React.Component {
                 this.state.questions[this.state.page].hard
             )
         } else {
-            this.answer("our",false)
+            this.answer("our", false)
             this.setState((prevState) => ({
                 page: prevState.page + 1,
                 right: false
@@ -233,6 +230,8 @@ class Ourgame extends React.Component {
     }
 
     render() {
+        console.log("from ", this.state.from)
+        console.log("block ", this.state.block)
         if (this.state.level === null && !this.state.from) {
             return (
                 <>
@@ -256,7 +255,7 @@ class Ourgame extends React.Component {
                 </>
             )
         } else
-            return ((this.state.loading && this.state.questions.length >= 20 )|| this.state.block ? <Container>
+            return ((this.state.loading && this.state.questions.length >= 20) || this.state.block ? <Container>
                     {this.state.endgame ? <>
                         <h3 className="text-center">Конец игры <span>
                      <ButtonGroup>
@@ -321,9 +320,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        createWord: (type, group, value, translate,wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value,translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
+        createWord: (type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
         getWordsByState: (group, page) => dispatch(asyncGetWords(group, page)),
-        setStats: (id, token, value) => dispatch(asyncSetStats(id,token,value))
+        setStats: (id, token, value) => dispatch(asyncSetStats(id, token, value))
     }
 }
 
