@@ -15,10 +15,11 @@ export const setStats = (value) => {
         value
     }
 }
-const defaultStat = async (id, token) => {
+const defaultStat = async (id, token, prev = null) => {
     const response = await axios.put(`${BASE_URL}users/${id}/statistics`,
         {
             optional: {
+                ...prev.optional,
                 [new Date().toLocaleDateString()]: {
                     wordPerDay: 0,
                     savanna: {
@@ -52,6 +53,7 @@ const defaultStat = async (id, token) => {
     return response.data
 }
 
+
 export const asyncGetStats = (id, token) => {
     return async dispatch => {
         if (id) {
@@ -64,8 +66,13 @@ export const asyncGetStats = (id, token) => {
                     dispatch(getStats(await defaultStat(id, token)))
                 }
             })
-            if (response)
-                dispatch(getStats(response.data))
+            if (response) {
+                const exist = response.data.optional[new Date().toLocaleDateString()]
+                if (typeof exist === "undefined") {
+                    dispatch(getStats(await defaultStat(id, token, response.data)))
+                } else
+                    dispatch(getStats(response.data))
+            }
         }
     }
 }

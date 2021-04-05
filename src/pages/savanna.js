@@ -179,7 +179,7 @@ class Savanna extends React.Component {
 
     getFromLearning = () => {
         const words = []
-        this.props.learning.every((word) => {
+        this.shuffle(this.props.learning).every((word) => {
             let mask = ""
             for (let i = 0; i < word.value.length; i++) {
                 mask += "*"

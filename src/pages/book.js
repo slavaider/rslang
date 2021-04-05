@@ -110,6 +110,9 @@ class Book extends React.Component {
                 {/*Choose Settings and group*/}
                 <Row className="justify-content-center">
                     {this.props.token ? <>
+                        <Link to="/games/audiogame?book=true">
+                            <Button variant="dark">Аудиовызов</Button>
+                        </Link>
                         <Link to="/games/savanna?book=true">
                             <Button variant="dark">Саванна</Button>
                         </Link>
