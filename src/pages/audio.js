@@ -106,8 +106,8 @@ class AudioCall extends React.Component {
             }
         )
         if (this.state.from) {
-            if (this.state.questions + words.length < 20) {
-                if (+localStorage.getItem("page") > 1) {
+            if (this.state.questions.length + words.length < 20) {
+                if (+localStorage.getItem("page") !== 1) {
                     this.props.getWordsByState(+localStorage.getItem("group"), +localStorage.getItem("page") - 1)
                     localStorage.setItem("page", (+localStorage.getItem("page") - 1).toString())
                 } else
