@@ -1,17 +1,24 @@
 import React from "react";
-import {Button, ButtonGroup, Card, Container, Form, InputGroup, Row} from "react-bootstrap";
-import {asyncCreateWord} from "../store/actions/words";
-import {Link} from "react-router-dom"
-import {BASE_URL} from "../config";
-import {asyncGetWords} from "../store/actions/book";
-import {connect} from "react-redux";
-import {asyncSetStats} from "../store/actions/stats";
+import {
+    Button,
+    ButtonGroup,
+    Card,
+    Container,
+    Form,
+    InputGroup,
+    Row,
+} from "react-bootstrap";
+import { asyncCreateWord } from "../store/actions/words";
+import { Link } from "react-router-dom";
+import { BASE_URL } from "../config";
+import { asyncGetWords } from "../store/actions/book";
+import { connect } from "react-redux";
+import { asyncSetStats } from "../store/actions/stats";
 import Spin from "../components/Spin/Spin";
-import {group_variant, shuffle} from "../utils";
-
+import { group_variant, shuffle } from "../utils";
+import "../styles/ourgame.css";
 
 class Ourgame extends React.Component {
-
     state = {
         questions: [],
         page: 0,
@@ -20,153 +27,172 @@ class Ourgame extends React.Component {
         block: false,
         from: !!new URLSearchParams(this.props.location.search).get("book"),
         level: null,
-        loading: false
-    }
-
+        loading: false,
+    };
 
     componentDidMount() {
         if (this.state.from && this.props.learning.length !== 0) {
-            this.getFromLearning()
+            this.getFromLearning();
         } else {
-            this.getFromWords()
+            this.getFromWords();
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if ((prevProps.learning !== this.props.learning) && prevState.questions.length < 20) {
+        if (
+            prevProps.learning !== this.props.learning &&
+            prevState.questions.length < 20
+        ) {
             if (this.state.from) {
-                this.getFromLearning()
+                this.getFromLearning();
             }
         }
-        if ((prevProps.words !== this.props.words) && prevState.questions.length < 20) {
+        if (
+            prevProps.words !== this.props.words &&
+            prevState.questions.length < 20
+        ) {
             if (!this.state.block) {
-                this.getFromWords()
+                this.getFromWords();
             }
         }
         if (prevState.questions !== this.state.questions) {
             if (this.state.questions.length !== 0)
-                this.setState({loading: true})
+                this.setState({ loading: true });
         }
     }
 
     getFromWords = () => {
-        const words = []
-        let group = group_variant[+localStorage.getItem("group") - 1]
+        const words = [];
+        let group = group_variant[+localStorage.getItem("group") - 1];
         if (this.state.level) {
-            group = group_variant[this.state.level - 1]
+            group = group_variant[this.state.level - 1];
         }
         this.props.words.forEach((word) => {
-                const notLearn = !this.props.learning.find((el) => el.wordId === word.id)
-                const notDelete = !this.props.deleted.find((el) => el.wordId === word.id)
-                if (notLearn && notDelete) {
-                    this.props.createWord(
-                        "learn",
-                        group,
-                        word.word,
-                        word.wordTranslate,
-                        word.id,
-                        word.image,
-                        word.textExample,
-                        word.textExampleTranslate,
-                        this.props.id,
-                        this.props.token,
-                        0,
-                        0,
-                        word.audio,
-                        false)
-                    let mask = ""
-                    for (let i = 0; i < word.word.length; i++) {
-                        mask += "*"
-                    }
-                    words.push({
-                        text: word.word,
-                        text_translate: word.wordTranslate,
-                        img: word.image,
-                        id: word.id,
-                        example: word.textExample.replace(`${word.word}`, mask + `[${word.word.length}]`),
-                        raw: word.textExample,
-                        translate: word.textExampleTranslate,
-                        variant: group,
-                        audio: word.audio,
-                        hard: false
-                    })
+            const notLearn = !this.props.learning.find(
+                (el) => el.wordId === word.id
+            );
+            const notDelete = !this.props.deleted.find(
+                (el) => el.wordId === word.id
+            );
+            if (notLearn && notDelete) {
+                this.props.createWord(
+                    "learn",
+                    group,
+                    word.word,
+                    word.wordTranslate,
+                    word.id,
+                    word.image,
+                    word.textExample,
+                    word.textExampleTranslate,
+                    this.props.id,
+                    this.props.token,
+                    0,
+                    0,
+                    word.audio,
+                    false
+                );
+                let mask = "";
+                for (let i = 0; i < word.word.length; i++) {
+                    mask += "*";
                 }
+                words.push({
+                    text: word.word,
+                    text_translate: word.wordTranslate,
+                    img: word.image,
+                    id: word.id,
+                    example: word.textExample.replace(
+                        `${word.word}`,
+                        mask + `[${word.word.length}]`
+                    ),
+                    raw: word.textExample,
+                    translate: word.textExampleTranslate,
+                    variant: group,
+                    audio: word.audio,
+                    hard: false,
+                });
             }
-        )
+        });
         if (this.state.from) {
             if (this.state.questions.length + words.length < 20) {
                 if (+localStorage.getItem("page") !== 1) {
-                    this.props.getWordsByState(+localStorage.getItem("group"), +localStorage.getItem("page") - 1)
-                    localStorage.setItem("page", (+localStorage.getItem("page") - 1).toString())
-                } else
-                    this.setState({block: true})
+                    this.props.getWordsByState(
+                        +localStorage.getItem("group"),
+                        +localStorage.getItem("page") - 1
+                    );
+                    localStorage.setItem(
+                        "page",
+                        (+localStorage.getItem("page") - 1).toString()
+                    );
+                } else this.setState({ block: true });
             }
         }
-        this.setState({questions: [...this.state.questions, ...words]})
-    }
-
+        this.setState({ questions: [...this.state.questions, ...words] });
+    };
 
     getFromLearning = () => {
-        const words = []
+        const words = [];
         shuffle(this.props.learning).every((word) => {
-            let mask = ""
+            let mask = "";
             for (let i = 0; i < word.value.length; i++) {
-                mask += "*"
+                mask += "*";
             }
             words.push({
                 text: word.value,
                 text_translate: word.translate,
                 img: word.image,
                 id: word.wordId,
-                example: word.textExample.replace(`${word.value}`, mask + `[${word.value.length}]`),
+                example: word.textExample.replace(
+                    `${word.value}`,
+                    mask + `[${word.value.length}]`
+                ),
                 raw: word.textExample,
                 translate: word.textExampleTranslate,
                 variant: word.group,
                 audio: word.audio,
-                hard: word.hard
-            })
+                hard: word.hard,
+            });
             return words.length < 20;
-        })
+        });
         if (words.length < 20) {
-            this.setState({learning_turn: false})
-            this.getFromWords()
+            this.setState({ learning_turn: false });
+            this.getFromWords();
         }
-        this.setState({questions: words})
-    }
+        this.setState({ questions: words });
+    };
 
     getFromHeader = (group) => {
-        const page = +(Math.random() * (30 - 1) + 1).toFixed(0)
-        this.props.getWordsByState(group, page)
-        this.setState({level: group})
-    }
+        const page = +(Math.random() * (30 - 1) + 1).toFixed(0);
+        this.props.getWordsByState(group, page);
+        this.setState({ level: group });
+    };
 
     answer = (game_type, value) => {
-        const copy = this.props.stats.optional[new Date().toLocaleDateString()]
-        copy.wordPerDay += 1
-        const game = copy[game_type]
-        game.count += 1
+        const copy = this.props.stats.optional[new Date().toLocaleDateString()];
+        copy.wordPerDay += 1;
+        const game = copy[game_type];
+        game.count += 1;
         if (value) {
-            game.success += 1
-            game.series += 1
+            game.success += 1;
+            game.series += 1;
         } else {
-            game.series = 0
+            game.series = 0;
         }
-        this.props.setStats(this.props.id, this.props.token, copy)
-    }
+        this.props.setStats(this.props.id, this.props.token, copy);
+    };
 
     submit = (e) => {
         e.preventDefault();
-        let group = group_variant[+localStorage.getItem("group") - 1]
+        let group = group_variant[+localStorage.getItem("group") - 1];
         if (this.state.level) {
-            group = group_variant[this.state.level - 1]
+            group = group_variant[this.state.level - 1];
         }
         const answer = e.target.answer.value.toLowerCase();
         if (answer === this.state.questions[this.state.page].text) {
-            this.answer("our", true)
+            this.answer("our", true);
             this.setState((prevState) => ({
                 page: prevState.page + 1,
-                right: true
-            }))
+                right: true,
+            }));
             this.props.createWord(
                 "learn",
                 group,
@@ -182,14 +208,15 @@ class Ourgame extends React.Component {
                 1,
                 this.state.questions[this.state.page].audio,
                 this.state.questions[this.state.page].hard
-            )
+            );
         } else {
-            this.answer("our", false)
+            this.answer("our", false);
             this.setState((prevState) => ({
                 page: prevState.page + 1,
-                right: false
-            }))
-            this.props.createWord("learn",
+                right: false,
+            }));
+            this.props.createWord(
+                "learn",
                 group,
                 this.state.questions[this.state.page].text,
                 this.state.questions[this.state.page].text_translate,
@@ -203,85 +230,170 @@ class Ourgame extends React.Component {
                 0,
                 this.state.questions[this.state.page].audio,
                 this.state.questions[this.state.page].hard
-            )
+            );
         }
         if (typeof this.state.questions[this.state.page + 1] === "undefined") {
-            this.setState({endgame: true})
+            this.setState({ endgame: true });
         }
-    }
+    };
 
     render() {
         if (this.state.level === null && !this.state.from) {
             return (
                 <>
                     <Row className="justify-content-center">
-                        <h1>Выберите уровень сложности</h1>
-                        <ButtonGroup className="mx-2 my-2">
-                            <Button onClick={() => this.getFromHeader(1)}
-                                    variant="outline-dark">1</Button>
-                            <Button onClick={() => this.getFromHeader(2)}
-                                    variant="outline-info">2</Button>
-                            <Button onClick={() => this.getFromHeader(3)}
-                                    variant="outline-success">3</Button>
-                            <Button onClick={() => this.getFromHeader(4)}
-                                    variant="outline-primary">4</Button>
-                            <Button onClick={() => this.getFromHeader(5)}
-                                    variant="outline-secondary">5</Button>
-                            <Button onClick={() => this.getFromHeader(6)}
-                                    variant="outline-danger">6</Button>
-                        </ButtonGroup>
+                        <div className="levels__container-ourgame">
+                            <h1>Выберите уровень сложности</h1>
+                            <ButtonGroup className="mx-2 my-2">
+                                <Button
+                                    onClick={() => this.getFromHeader(1)}
+                                    variant="outline-dark"
+                                >
+                                    1
+                                </Button>
+                                <Button
+                                    onClick={() => this.getFromHeader(2)}
+                                    variant="outline-info"
+                                >
+                                    2
+                                </Button>
+                                <Button
+                                    onClick={() => this.getFromHeader(3)}
+                                    variant="outline-success"
+                                >
+                                    3
+                                </Button>
+                                <Button
+                                    onClick={() => this.getFromHeader(4)}
+                                    variant="outline-primary"
+                                >
+                                    4
+                                </Button>
+                                <Button
+                                    onClick={() => this.getFromHeader(5)}
+                                    variant="outline-secondary"
+                                >
+                                    5
+                                </Button>
+                                <Button
+                                    onClick={() => this.getFromHeader(6)}
+                                    variant="outline-danger"
+                                >
+                                    6
+                                </Button>
+                            </ButtonGroup>
+                        </div>
                     </Row>
                 </>
-            )
+            );
         } else
-            return ((this.state.loading && this.state.questions.length >= 20) || this.state.block ? <Container>
-                    {this.state.endgame ? <>
-                        <h3 className="text-center">Конец игры <span>
-                     <ButtonGroup>
-                    <Link to="/book">
-                    <Button variant="info">Вернуться в учебник</Button>
-                    </Link>
-                    <Link to="/book">
-                    <Button variant="info">На главную</Button>
-                    </Link>
-                </ButtonGroup>
-                </span></h3>
-                    </> : <>
-                        <h2 className="text-center">Отгадай слово по картинке и описанию</h2>
-                        <Row className="justify-content-center">
-                            <Card
-                                bg={this.state.questions[this.state.page].variant}
-                                key={"ourgame" + this.state.questions[this.state.page].id}
-                                text={"light"}
-                                className="my-2 mx-2"
-                            >
-                                <Card.Img variant="top"
-                                          src={`${BASE_URL}${this.state.questions[this.state.page].img}`}/>
-                                <Card.Text className="text-center mt-2">
-                                <span
-                                    dangerouslySetInnerHTML={{__html: this.state.questions[this.state.page].example}}/>
-                                </Card.Text>
-                                <Card.Footer>
-                                    <Form onSubmit={(e) => this.submit(e)}>
-                                        <InputGroup>
-                                            <Form.Control name="answer" placeholder="Answer"/>
-                                            <InputGroup.Append>
-                                                <Button variant="success" type="submit">Ответить</Button>
-                                            </InputGroup.Append>
-                                        </InputGroup>
-                                    </Form>
-                                    Осталось слов {this.state.questions.length - this.state.page}
-                                    {this.state.right !== null ?
-                                        this.state.right ? <p className="text-success">Верно</p> :
-                                            <p className="text-danger">Неверно</p> : null}
-                                </Card.Footer>
-                            </Card>
-                        </Row>
-                    </>}
-                </Container> :
-                <Spin/>)
+            return (this.state.loading && this.state.questions.length >= 20) ||
+                this.state.block ? (
+                <Container>
+                    {this.state.endgame ? (
+                        <>
+                            <div className="end__container">
+                                <h3 className="text-center">Конец игры </h3>
+                                <span className="end__btns">
+                                    <ButtonGroup>
+                                        <Link to="/book">
+                                            <Button
+                                                variant="info"
+                                                size="lg"
+                                                className="end__btn"
+                                            >
+                                                Вернуться в учебник
+                                            </Button>
+                                        </Link>
+                                        <Link to="/book">
+                                            <Button
+                                                variant="info"
+                                                size="lg"
+                                                className="end__btn"
+                                            >
+                                                На главную
+                                            </Button>
+                                        </Link>
+                                    </ButtonGroup>
+                                </span>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <h2 className="text-center">
+                                Отгадай слово по картинке и описанию
+                            </h2>
+                            <Row className="justify-content-center">
+                                <Card
+                                    bg={
+                                        this.state.questions[this.state.page]
+                                            .variant
+                                    }
+                                    key={
+                                        "ourgame" +
+                                        this.state.questions[this.state.page].id
+                                    }
+                                    text={"light"}
+                                    className="my-2 mx-2"
+                                >
+                                    <Card.Img
+                                        variant="top"
+                                        src={`${BASE_URL}${
+                                            this.state.questions[
+                                                this.state.page
+                                            ].img
+                                        }`}
+                                    />
+                                    <Card.Text className="text-center mt-2">
+                                        <span
+                                            dangerouslySetInnerHTML={{
+                                                __html: this.state.questions[
+                                                    this.state.page
+                                                ].example,
+                                            }}
+                                        />
+                                    </Card.Text>
+                                    <Card.Footer>
+                                        <Form onSubmit={(e) => this.submit(e)}>
+                                            <InputGroup>
+                                                <Form.Control
+                                                    name="answer"
+                                                    placeholder="Answer"
+                                                />
+                                                <InputGroup.Append>
+                                                    <Button
+                                                        variant="success"
+                                                        type="submit"
+                                                    >
+                                                        Ответить
+                                                    </Button>
+                                                </InputGroup.Append>
+                                            </InputGroup>
+                                        </Form>
+                                        Осталось слов{" "}
+                                        {this.state.questions.length -
+                                            this.state.page}
+                                        {this.state.right !== null ? (
+                                            this.state.right ? (
+                                                <p className="text-success">
+                                                    Верно
+                                                </p>
+                                            ) : (
+                                                <p className="text-danger">
+                                                    Неверно
+                                                </p>
+                                            )
+                                        ) : null}
+                                    </Card.Footer>
+                                </Card>
+                            </Row>
+                        </>
+                    )}
+                </Container>
+            ) : (
+                <Spin />
+            );
     }
-
 }
 
 function mapStateToProps(state) {
@@ -292,15 +404,49 @@ function mapStateToProps(state) {
         id: state.auth.id,
         token: state.auth.token,
         stats: state.stats.statistic,
-    }
+    };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        createWord: (type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard) => dispatch(asyncCreateWord(type, group, value, translate, wordId, image, textExample, textExampleTranslate, userId, token, fail, success, audio, hard)),
+        createWord: (
+            type,
+            group,
+            value,
+            translate,
+            wordId,
+            image,
+            textExample,
+            textExampleTranslate,
+            userId,
+            token,
+            fail,
+            success,
+            audio,
+            hard
+        ) =>
+            dispatch(
+                asyncCreateWord(
+                    type,
+                    group,
+                    value,
+                    translate,
+                    wordId,
+                    image,
+                    textExample,
+                    textExampleTranslate,
+                    userId,
+                    token,
+                    fail,
+                    success,
+                    audio,
+                    hard
+                )
+            ),
         getWordsByState: (group, page) => dispatch(asyncGetWords(group, page)),
-        setStats: (id, token, value) => dispatch(asyncSetStats(id, token, value))
-    }
+        setStats: (id, token, value) =>
+            dispatch(asyncSetStats(id, token, value)),
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ourgame);

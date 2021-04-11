@@ -1,3 +1,19 @@
+.levels__container-audiocall {
+	width: 100%;
+	height: 20vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 3rem;
+}
+
+.level__changer-audiocall {
+	display: flex;
+	width: 50%;
+	justify-content: center;
+}
+
 .audiocall__content {
 	width: 100%;
 	height: 60vh;
@@ -5,7 +21,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: flex-start;
+	justify-content: space-between;
 	position: relative;
 	overflow-x: hidden;
 	box-sizing: border-box;
@@ -13,18 +29,30 @@
 }
 
 .audiocall__title {
-	margin-left: 1%;
-	margin: 0 auto;
-	left: 0;
 	font-size: 2rem;
-	position: absolute;
-	top: 3%;
 	z-index: 1;
 }
 
+h2.title__text {
+	text-align: left;
+}
+
+.audiocall__images {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	height: 50%;
+	width: 100%;
+}
+
+.headphones__img {
+	height: 70%;
+	margin: 0;
+	object-position: right;
+}
+
 .speaker__img {
-	position: absolute;
-	top: 15%;
 	cursor: pointer;
 	width: 8rem;
 	height: 8rem;
@@ -45,23 +73,27 @@
 	border-radius: 50%;
 }
 
-.audiocall__word {
-	position: absolute;
+.answer__img-audiocall {
+	width: 390px;
+	height: 260px;
+}
+
+
+
+.audiocall__answer {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 50%;
-	height: 20%;
-	left: 40%;
-	top: 20%;
+	width: 100%;
+	height: 10%;
+	font-size: 2rem;
+	font-weight: 800;
+	color: teal;
 }
 
 .btn__container-audiocall {
-	width: 60%;
-	height: 20%;
-	left: 40%;
-	bottom: 20%;
-	position: absolute;
+	width: 100%;
+	height: 15%;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -71,21 +103,21 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0;
-	margin: 0;
-	width: 20%;
+	width: 18%;
 	height: 50%;
 	font-size: 1.2rem;
 	font-weight: 500;
 	background-color: rgb(255, 255, 255, 0);
 	border-style: none;
 	color: black;
-	transition: 0.3s;
+	transition: 0.2s all;
 	border-radius: 1rem;
 }
 
 .btn__audiocall:hover {
 	border: 0.1rem solid teal;
+	background-color: orange;
+	padding: 1.6rem;
 }
 
 
@@ -126,16 +158,45 @@
 	border-radius: 0.2rem;
 }
 
-.audiocall__bg {
-	position: absolute;
-	height: 50%;
-	left: 0;
-	top: 25%;
-	margin: 0;
-	object-position: right;
+@media only screen and (max-width: 480px) {
+
+	.levels__container-audiocall {
+		width: 90%;
+		height: auto;
+		margin: 0 auto;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.audiocall__content {
+		margin-top: 0;
+		height: auto;
+	}
+
+	.audiocall__images {
+		flex-direction: column;
+	}
+
+	.headphones__img {
+		height: 0%;
+		width: 0%;
+		visibility: hidden;
+	}
+
+	.answer__img-audiocall {
+		height: 50%;
+		width: 50%;
+	}
+
+	.btn__container-audiocall {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.end__btn.btn {
+		width: 100%;
+		text-align: center;
+	}
+
 }
-
-
-
-
-.btn__audiocall {}

@@ -1,14 +1,58 @@
-.savanna__content {
+.levels__container-savanna {
 	width: 100%;
-	height: 30%;
+	height: 20vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 3rem;
+}
+
+.end__container {
+	width: 100%;
+	height: 60vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+h3.end__text {
+	width: 100%;
+	margin: 2rem auto;
+	height: 2rem;
+	text-align: center;
+}
+
+.end__btn {
+	width: 15rem;
+}
+
+.savanna {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 60vh;
 	margin-top: 2rem;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	position: relative;
+	justify-content: space-between;
 	overflow-x: hidden;
 	box-sizing: border-box;
+	position: relative;
+}
+
+.savanna__bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 60vh;
+	object-fit: cover;
+	object-position: center;
+	margin: 0;
+
 }
 
 p {
@@ -16,56 +60,51 @@ p {
 	padding: 0;
 }
 
-.savanna__title {
-	margin: 0 auto;
-	font-size: 2rem;
-	text-align: left;
-	position: absolute;
-	top: 3%;
-	z-index: 1;
-}
-
-
-.savanna__bg {
+.savanna__content {
 	position: relative;
 	width: 100%;
-	height: 100%;
-	object-fit: fill;
-	object-position: center;
-	margin: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
 }
 
-.heart__container {
-	width: 20%;
-	height: 3rem;
+.savanna__header {
+	padding: 0 3rem;
+	margin: 6rem 0;
+	width: 100%;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	position: absolute;
-	top: 3%;
-	right: 3%;
-}
-.savanna__question{
-	text-align: center;
 }
 
-.heart__img {
-	top: 10%;
-	left: 10%;
-	width: 2rem;
-	height: 2rem;
-	z-index: 1;
+h2.savanna__title {
+	font-size: 2rem;
+	z-index: 2;
+	color: white;
+}
+
+.savanna__count {
+	font-size: 2rem;
+	color: white;
+	z-index: 2;
+}
+
+.savanna__question {
+	margin: 0 auto;
+	font-size: 2rem;
+	font-weight: 800;
+	text-align: center;
+	color: yellow;
+	z-index: 2;
+	margin-bottom: 2rem;
 }
 
 .btn__container {
-	width: 80%;
-	height: 10%;
-	position: absolute;
-	top: 40%;
-	z-index: 1;
-	right: 0;
-	left: 0;
+	width: 90%;
+	height: 2.5rem;
+	z-index: 2;
 	margin: 0 auto;
 	display: flex;
 	flex-direction: row;
@@ -75,19 +114,42 @@ p {
 
 .btn__savanna {
 	margin: 0;
-	width: 20%;
-	height: 50%;
-	padding: 0;
-	font-weight: 500;
+	box-sizing: border-box;
+	width: 18%;
+	margin: 0 2rem;
+	font-weight: 400;
 	background-color: rgba(255, 255, 255, 0);
 	border-style: none;
 	color: white;
-	transition: 0.3s;
+	transition: 0.2s all;
 	border-radius: 1rem;
 }
 
 .btn__savanna:hover {
 	border: 0.1rem solid white;
+	background-color: chocolate;
+	padding: 1.6rem;
+}
+
+.btn__savanna:active {
+	background-color: orange;
+}
+
+.heart__container {
+	width: 20%;
+	height: 3rem;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.heart__img {
+	top: 10%;
+	left: 10%;
+	width: 2rem;
+	height: 2rem;
+	z-index: 1;
 }
 
 .bar__result {
@@ -112,4 +174,22 @@ p {
 .uncorrect {
 	border: 0.1rem solid red;
 	background-color: red;
+}
+
+@media only screen and (max-width: 480px) {
+
+	.levels__container-savanna {
+		width: 90%;
+		height: auto;
+		margin: 0 auto;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.savanna__content {
+		margin-top: 0;
+		height: auto;
+	}
+
 }

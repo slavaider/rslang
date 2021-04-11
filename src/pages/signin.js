@@ -1,40 +1,39 @@
 import React from "react";
-import {Badge, Button, FormControl, InputGroup, Modal} from "react-bootstrap";
-import {Register} from "../store/actions/auth";
-import {connect} from "react-redux";
+import { Badge, Button, FormControl, InputGroup, Modal } from "react-bootstrap";
+import { Register } from "../store/actions/auth";
+import { connect } from "react-redux";
 import Spin from "../components/Spin/Spin";
 
 class Signin extends React.Component {
     state = {
-        show: true
-    }
+        show: true,
+    };
 
     componentDidMount() {
         if (localStorage.getItem("token")) {
-            this.close()
+            this.close();
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.name !== this.props.name) {
-            this.close()
+            this.close();
         }
     }
 
     close = () => {
-        this.setState({show: false})
-        this.props.history.goBack()
-    }
+        this.setState({ show: false });
+        this.props.history.goBack();
+    };
     Register = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         const user = {
             name: e.target.name.value,
             email: e.target.email.value,
             password: e.target.password.value,
-        }
-        this.props.register(user)
-    }
-
+        };
+        this.props.register(user);
+    };
 
     render() {
         return (
@@ -44,7 +43,7 @@ class Signin extends React.Component {
                 backdrop="static"
                 keyboard={false}
             >
-                {!this.props.loading ?
+                {!this.props.loading ? (
                     <form onSubmit={this.Register}>
                         <Modal.Header closeButton>
                             <Modal.Title>Регистрация</Modal.Title>
@@ -52,7 +51,9 @@ class Signin extends React.Component {
                         <Modal.Body>
                             {this.props.error ? (
                                 <p>
-                                    <Badge variant="danger">{this.props.error}</Badge>
+                                    <Badge variant="danger">
+                                        {this.props.error}
+                                    </Badge>
                                 </p>
                             ) : null}
                             <InputGroup className="mb-3">
@@ -89,9 +90,10 @@ class Signin extends React.Component {
                                 Зарегистрироваться
                             </Button>
                         </Modal.Footer>
-                    </form> :
-                    <Spin/>
-                }
+                    </form>
+                ) : (
+                    <Spin />
+                )}
             </Modal>
         );
     }
@@ -100,7 +102,7 @@ class Signin extends React.Component {
 function mapDispatchToProps(dispatch) {
     return {
         register: (user) => dispatch(Register(user)),
-    }
+    };
 }
 
 function mapStateToProps(state) {
@@ -108,7 +110,7 @@ function mapStateToProps(state) {
         name: state.auth.name,
         loading: state.loading.loading,
         error: state.loading.error,
-    }
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signin);
