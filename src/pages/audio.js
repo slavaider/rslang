@@ -1,18 +1,19 @@
 import React from "react";
-import { Button, ButtonGroup, Container, Row, Modal } from "react-bootstrap";
+import {Button, ButtonGroup, Container, Modal, Row} from "react-bootstrap";
 import "../styles/audiocall.css";
 import phones from "../assets/icons/phones.svg";
 import speaker from "../assets/icons/speaker.svg";
-import { Link } from "react-router-dom";
-import { asyncCreateWord } from "../store/actions/words";
-import { asyncGetWords } from "../store/actions/book";
-import { asyncSetStats } from "../store/actions/stats";
-import { connect } from "react-redux";
-import { BASE_URL } from "../config";
-import { group_variant, shuffle } from "../utils";
+import {Link} from "react-router-dom";
+import {asyncCreateWord} from "../store/actions/words";
+import {asyncGetWords} from "../store/actions/book";
+import {asyncSetStats} from "../store/actions/stats";
+import {connect} from "react-redux";
+import {BASE_URL} from "../config";
+import {group_variant, shuffle} from "../utils";
 import Spin from "../components/Spin/Spin";
 import errorSound from "../assets/sounds/error.mp3";
 import okSound from "../assets/sounds/ok.mp3";
+
 class AudioCall extends React.Component {
     state = {
         questions: [],
@@ -29,7 +30,7 @@ class AudioCall extends React.Component {
     };
 
     close = () => {
-        this.setState({ show: false, endGame: false });
+        this.setState({show: false, endGame: false});
     };
 
     componentDidMount() {
@@ -78,7 +79,7 @@ class AudioCall extends React.Component {
                     this.state.questions[this.state.page].text_translate,
                 ];
                 const final = shuffle(four);
-                this.setState({ loading: true, shuffle: final });
+                this.setState({loading: true, shuffle: final});
             }
         }
     }
@@ -145,10 +146,10 @@ class AudioCall extends React.Component {
                         "page",
                         (+localStorage.getItem("page") - 1).toString()
                     );
-                } else this.setState({ block: true });
+                } else this.setState({block: true});
             }
         }
-        this.setState({ questions: [...this.state.questions, ...words] });
+        this.setState({questions: [...this.state.questions, ...words]});
     };
 
     getFromLearning = () => {
@@ -176,10 +177,10 @@ class AudioCall extends React.Component {
             return words.length < 20;
         });
         if (words.length < 20) {
-            this.setState({ learning_turn: false });
+            this.setState({learning_turn: false});
             this.getFromWords();
         }
-        this.setState({ questions: words });
+        this.setState({questions: words});
     };
     playSound = (path) => {
         const audio = new Audio(`${BASE_URL}${path}`);
@@ -189,7 +190,7 @@ class AudioCall extends React.Component {
     getFromHeader = (group) => {
         const page = +(Math.random() * (30 - 1) + 1).toFixed(0);
         this.props.getWordsByState(group, page);
-        this.setState({ level: group });
+        this.setState({level: group});
     };
 
     answer = (game_type, value) => {
@@ -225,13 +226,13 @@ class AudioCall extends React.Component {
                 this.state.questions[this.state.page + 1].text_translate,
             ];
             const final = shuffle(four);
-            this.setState({ shuffle: final });
+            this.setState({shuffle: final});
         }
     };
 
     submit = (answer) => {
         if (typeof this.state.questions[this.state.page + 1] === "undefined") {
-            this.setState({ endgame: true });
+            this.setState({endgame: true});
         }
         let group = group_variant[+localStorage.getItem("group") - 1];
         if (answer === this.state.questions[this.state.page].text_translate) {
@@ -337,7 +338,7 @@ class AudioCall extends React.Component {
             );
         } else
             return (this.state.loading && this.state.questions.length >= 20) ||
-                this.state.block ? (
+            this.state.block ? (
                 <Container>
                     {this.state.endgame ? (
                         <>
@@ -418,7 +419,7 @@ class AudioCall extends React.Component {
                                         this.playSound(
                                             this.state.questions[
                                                 this.state.page
-                                            ].audio
+                                                ].audio
                                         )
                                     }
                                     src={speaker}
@@ -429,9 +430,7 @@ class AudioCall extends React.Component {
                                         this.state.questions[this.state.page]
                                             .img
                                     }
-                                    src={`${BASE_URL}${
-                                        this.state.questions[this.state.page]
-                                            .img
+                                    src={`${BASE_URL}${this.state.questions[this.state.page].img
                                     }`}
                                     className="answer__img-audiocall"
                                 />
@@ -458,7 +457,7 @@ class AudioCall extends React.Component {
                     )}
                 </Container>
             ) : (
-                <Spin />
+                <Spin/>
             );
     }
 }

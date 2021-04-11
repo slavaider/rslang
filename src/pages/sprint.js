@@ -3,20 +3,13 @@ import "../styles/sprint.css";
 import sprint from "../assets/images/sprint.jpg";
 import errorSound from "../assets/sounds/error.mp3";
 import okSound from "../assets/sounds/ok.mp3";
-import { asyncCreateWord } from "../store/actions/words";
-import { asyncGetWords } from "../store/actions/book";
-import { connect } from "react-redux";
-import {
-    Button,
-    Container,
-    Modal,
-    Row,
-    ButtonGroup,
-    Spinner,
-} from "react-bootstrap";
-import { group_variant, shuffle } from "../utils";
-import { asyncSetStats } from "../store/actions/stats";
-import { Link } from "react-router-dom";
+import {asyncCreateWord} from "../store/actions/words";
+import {asyncGetWords} from "../store/actions/book";
+import {connect} from "react-redux";
+import {Button, ButtonGroup, Container, Modal, Row, Spinner,} from "react-bootstrap";
+import {group_variant, shuffle} from "../utils";
+import {asyncSetStats} from "../store/actions/stats";
+import {Link} from "react-router-dom";
 
 class Sprint extends React.Component {
     constructor(props) {
@@ -57,25 +50,25 @@ class Sprint extends React.Component {
         });
         if (this.state.currentCount < 1) {
             console.log(this.stats.rightWords, this.stats.errorWords);
-            this.setState({ countOn: false });
+            this.setState({countOn: false});
             document
                 .getElementById("btn__start")
                 .classList.remove("not__visible");
             document.getElementById("game__body").classList.add("not__visible");
             clearInterval(this.state.intervalId);
-            this.setState({ currentCount: 60 });
-            this.setState({ endGame: true });
+            this.setState({currentCount: 60});
+            this.setState({endGame: true});
         }
     }
 
-    startGame = (props) => {
-        this.setState({ countOn: true, show: true });
+    startGame = () => {
+        this.setState({countOn: true, show: true});
 
         const wordsRu = this.state.questions.map((el) => el.text_translate);
         const wordsEng = this.state.questions.map((el) => el.text);
 
-        this.setState({ wordsRu: wordsRu });
-        this.setState({ wordsEng: wordsEng });
+        this.setState({wordsRu: wordsRu});
+        this.setState({wordsEng: wordsEng});
 
         this.setState({
             wordEng: wordsEng[Math.floor(Math.random() * wordsEng.length)],
@@ -86,7 +79,7 @@ class Sprint extends React.Component {
         this.stats.errorWords = 0;
         this.stats.rightWords = 0;
 
-        this.setState({ intervalId: setInterval(this.timer.bind(this), 1000) });
+        this.setState({intervalId: setInterval(this.timer.bind(this), 1000)});
 
         document.getElementById("btn__start").classList.add("not__visible");
         document.getElementById("game__body").classList.remove("not__visible");
@@ -94,7 +87,7 @@ class Sprint extends React.Component {
 
     handleClick = (e) => {
         if (this.state.countOn === true) {
-            this.setState({ buttonId: e.target.id });
+            this.setState({buttonId: e.target.id});
             this.game(e.target.id);
         }
     };
@@ -129,17 +122,17 @@ class Sprint extends React.Component {
         this.setState({
             wordEng: this.state.wordsEng[
                 Math.floor(Math.random() * this.state.wordsEng.length)
-            ],
+                ],
         });
         this.setState({
             wordRu: this.state.wordsRu[
                 Math.floor(Math.random() * this.state.wordsRu.length)
-            ],
+                ],
         });
     };
 
     close = () => {
-        this.setState({ show: false });
+        this.setState({show: false});
     };
 
     componentWillUnmount() {
@@ -189,7 +182,7 @@ class Sprint extends React.Component {
                     this.state.questions[this.state.page].text_translate,
                 ];
                 const final = shuffle(four);
-                this.setState({ loading: true, shuffle: final });
+                this.setState({loading: true, shuffle: final});
             }
         }
     }
@@ -256,10 +249,10 @@ class Sprint extends React.Component {
                         "page",
                         (+localStorage.getItem("page") - 1).toString()
                     );
-                } else this.setState({ block: true });
+                } else this.setState({block: true});
             }
         }
-        this.setState({ questions: [...this.state.questions, ...words] });
+        this.setState({questions: [...this.state.questions, ...words]});
     };
 
     getFromLearning = () => {
@@ -287,16 +280,16 @@ class Sprint extends React.Component {
             return words.length < 20;
         });
         if (words.length < 20) {
-            this.setState({ learning_turn: false });
+            this.setState({learning_turn: false});
             this.getFromWords();
         }
-        this.setState({ questions: words });
+        this.setState({questions: words});
     };
 
     getFromHeader = (group) => {
         const page = +(Math.random() * (30 - 1) + 1).toFixed(0);
         this.props.getWordsByState(group, page);
-        this.setState({ level: group });
+        this.setState({level: group});
     };
 
     answer = (game_type, value) => {
@@ -329,13 +322,13 @@ class Sprint extends React.Component {
                 this.state.questions[this.state.page + 1].text_translate,
             ];
             const final = shuffle(four);
-            this.setState({ shuffle: final });
+            this.setState({shuffle: final});
         }
     };
 
     submit = (answer) => {
         if (typeof this.state.questions[this.state.page + 1] === "undefined") {
-            this.setState({ endGame: true });
+            this.setState({endGame: true});
         }
         let group = group_variant[+localStorage.getItem("group") - 1];
         if (answer === true) {
@@ -439,7 +432,7 @@ class Sprint extends React.Component {
             );
         } else
             return (this.state.loading && this.state.questions.length >= 20) ||
-                this.state.block ? (
+            this.state.block ? (
                 <Container>
                     {this.state.endGame ? (
                         <>
@@ -540,7 +533,7 @@ class Sprint extends React.Component {
                                     </button>
                                 </div>
                                 <div className="sprint__game-card">
-                                    <div className="game__card-title"></div>
+                                    <div className="game__card-title"/>
                                     <div
                                         className="game__body not__visible"
                                         id="game__body"
@@ -553,7 +546,7 @@ class Sprint extends React.Component {
                                         </div>
                                     </div>
 
-                                    <div className="game__card-vector"></div>
+                                    <div className="game__card-vector"/>
 
                                     <button
                                         className="btn__true"
@@ -592,9 +585,9 @@ class Sprint extends React.Component {
             ) : (
                 <div
                     className="d-flex justify-content-center align-items-center"
-                    style={{ minHeight: 374 }}
+                    style={{minHeight: 374}}
                 >
-                    <Spinner size="lg" animation="border" variant="primary" />
+                    <Spinner size="lg" animation="border" variant="primary"/>
                 </div>
             );
     }

@@ -16,8 +16,6 @@ export const setStats = (value) => {
     }
 }
 const defaultStat = async (id, token, prev = null) => {
-
-
     if (prev) {
         const update = {
             optional: {
@@ -118,10 +116,12 @@ export const asyncGetStats = (id, token) => {
     }
 }
 export const asyncSetStats = (id, token, value) => {
-    return async dispatch => {
+    return async (dispatch,getState) => {
+        const state = getState()
         const response = await axios.put(`${BASE_URL}users/${id}/statistics`,
             {
                 optional: {
+                    ...state.stats.statistic.optional,
                     [new Date().toLocaleDateString()]: value
                 }
             }

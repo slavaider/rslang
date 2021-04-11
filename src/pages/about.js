@@ -22,7 +22,7 @@ function About() {
                                 только детям, но и взрослым.
                             </p>
                         </div>
-                        <div className="card__img-games"></div>
+                        <div className="card__img-games"/>
                     </Col>
                     <Col className="about__card">
                         {" "}
@@ -36,7 +36,7 @@ function About() {
                                 английского языка.
                             </p>
                         </div>
-                        <div className="card__img-247"></div>
+                        <div className="card__img-247"/>
                     </Col>
                 </Row>
                 <Row className="about">
@@ -50,7 +50,7 @@ function About() {
                                 Здесь Вы увидите свои слабые и сильные стороны.
                             </p>
                         </div>
-                        <div className="card__img-stats"></div>
+                        <div className="card__img-stats"/>
                     </Col>
                     <Col className="about__card">
                         {" "}
@@ -64,11 +64,11 @@ function About() {
                                 из самых эффективных в изучении новых языков.
                             </p>
                         </div>
-                        <div className="card__img-method"></div>
+                        <div className="card__img-method"/>
                     </Col>
                 </Row>
             </Container>
-            <Footer></Footer>
+            <Footer/>
         </div>
     );
 }
