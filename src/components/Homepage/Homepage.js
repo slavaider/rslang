@@ -2,7 +2,6 @@ import "./Homepage.css";
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
 import Home from "../Home/Home";
 import About from "../../pages/about";
 import Method from "../../pages/method";
@@ -37,7 +36,7 @@ function Homepage() {
         <Route path="/signin" component={Signin} />
         <Redirect to="/" />
       </Switch>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
