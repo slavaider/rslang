@@ -27,7 +27,7 @@
 	box-sizing: border-box;
 }
 
-..btn__full-screen {
+.btn__full-screen {
 	width: 3rem;
 	height: 3rem;
 	position: absolute;
@@ -208,5 +208,12 @@ h2.title__text {
 	.end__btn.btn {
 		width: 100%;
 		text-align: center;
+	}
+}
+
+
+@media only screen and (width: 768px) {
+	.btn__full-screen{
+		display: none;
 	}
 }
