@@ -52,7 +52,6 @@ h3.end__text {
 	object-fit: cover;
 	object-position: center;
 	margin: 0;
-
 }
 
 p {
@@ -85,6 +84,21 @@ h2.savanna__title {
 	color: white;
 }
 
+.btn__full-screen {
+	width: 3rem;
+	height: 3rem;
+	position: absolute;
+	top: 0.5rem;
+	right: 1rem;
+	cursor: pointer;
+	background-image: url(../assets/icons/fullscreen-icon.svg);
+	z-index: 2;
+}
+
+.btn__full-screen:hover {
+	opacity: 0.75;
+}
+
 .savanna__count {
 	font-size: 2rem;
 	color: white;
@@ -113,10 +127,7 @@ h2.savanna__title {
 }
 
 .btn__savanna {
-	margin: 0;
-	box-sizing: border-box;
 	width: 18%;
-	margin: 0 2rem;
 	font-weight: 400;
 	background-color: rgba(255, 255, 255, 0);
 	border-style: none;
@@ -127,12 +138,8 @@ h2.savanna__title {
 
 .btn__savanna:hover {
 	border: 0.1rem solid white;
-	background-color: chocolate;
-	padding: 1.6rem;
-}
-
-.btn__savanna:active {
 	background-color: orange;
+	padding: 1rem 0;
 }
 
 .heart__container {
@@ -168,7 +175,6 @@ h2.savanna__title {
 .correct {
 	border: 0.1rem solid green;
 	background-color: green;
-
 }
 
 .uncorrect {
@@ -176,8 +182,17 @@ h2.savanna__title {
 	background-color: red;
 }
 
-@media only screen and (max-width: 480px) {
+..modal-title {
+	font-size: 3rem;
+	text-align: center;
+}
 
+.modal-text {
+	font-size: 1.5rem;
+	text-align: center;
+}
+
+@media only screen and (max-width: 480px) {
 	.levels__container-savanna {
 		width: 90%;
 		height: auto;
@@ -192,4 +207,66 @@ h2.savanna__title {
 		height: auto;
 	}
 
+	.savanna {
+		margin-top: 0;
+	}
+
+	.savanna__bg {
+		height: 85vh;
+	}
+
+	.savanna__header {
+		margin: 0;
+		flex-direction: column;
+	}
+
+	h2.savanna__title {
+		font-size: 1.5rem;
+		color: teal;
+	}
+
+	.btn__full-screen {
+		display: none;
+	}
+
+	.savanna__count {
+		width: 90%;
+		font-size: 1.2rem;
+		text-align: center;
+		color: teal;
+	}
+
+	.heart__container {
+		width: 90%;
+		justify-content: center;
+	}
+
+	.btn__container {
+		flex-direction: column;
+		height: auto;
+	}
+
+	.btn__savanna {
+		width: 80%;
+		margin-bottom: 1rem;
+	}
+
+	.btn__savanna:hover {
+		padding: 0.2rem;
+	}
+}
+
+@media only screen and (width: 1024px) {
+	.savanna__header {
+		margin-top: 3rem;
+	}
+
+	h2.savanna__title {
+		color: teal;
+	}
+
+	.savanna__count {
+		text-align: center;
+		color: teal;
+	}
 }
