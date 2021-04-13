@@ -1,6 +1,6 @@
 import React from "react";
-import { connect } from "react-redux";
-import { Container, ListGroupItem } from "react-bootstrap";
+import {connect} from "react-redux";
+import {Container, ListGroupItem} from "react-bootstrap";
 import Spin from "../components/Spin/Spin";
 import "../styles/stats.css";
 
@@ -39,18 +39,13 @@ class Stats extends React.Component {
                                                                 this.props.stats
                                                                     .optional[
                                                                     date
-                                                                ]
+                                                                    ]
                                                             )}
                                                             %
                                                         </h4>
                                                         <h4>
                                                             Всего слов за день:
-                                                            {
-                                                                this.props.stats
-                                                                    .optional[
-                                                                    date
-                                                                ][key]
-                                                            }
+                                                            {this.props.stats.optional[date][key]}
                                                         </h4>
                                                         <div className="header">
                                                             <div className="column__property">
@@ -95,43 +90,13 @@ class Stats extends React.Component {
                                                                 </div>
                                                                 <div className="table__stats">
                                                                     <div className="table__items">
-                                                                        {
-                                                                            this
-                                                                                .props
-                                                                                .stats
-                                                                                .optional[
-                                                                                date
-                                                                            ][
-                                                                                key
-                                                                            ]
-                                                                                .count
-                                                                        }
+                                                                        {this.props.stats.optional[date][key].count}
                                                                     </div>
                                                                     <div className="table__items">
-                                                                        {
-                                                                            this
-                                                                                .props
-                                                                                .stats
-                                                                                .optional[
-                                                                                date
-                                                                            ][
-                                                                                key
-                                                                            ]
-                                                                                .success
-                                                                        }
+                                                                        {this.props.stats.optional[date][key].success}
                                                                     </div>
                                                                     <div className="table__items">
-                                                                        {
-                                                                            this
-                                                                                .props
-                                                                                .stats
-                                                                                .optional[
-                                                                                date
-                                                                            ][
-                                                                                key
-                                                                            ]
-                                                                                .series
-                                                                        }
+                                                                        {this.props.stats.optional[date][key].series}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -146,7 +111,7 @@ class Stats extends React.Component {
                         })}
                     </>
                 ) : (
-                    <Spin />
+                    <Spin/>
                 )}
             </Container>
         );

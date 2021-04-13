@@ -18,6 +18,7 @@ import { group_variant, shuffle } from "../utils";
 import { asyncSetStats } from "../store/actions/stats";
 import { Link } from "react-router-dom";
 
+
 class Sprint extends React.Component {
 	constructor(props) {
 		super(props);
@@ -76,13 +77,14 @@ class Sprint extends React.Component {
 		}
 	}
 
+
 	startGame = (props) => {
 		this.setState({ countOn: true, show: true });
 
 		const wordsRu = this.state.questions.map((el) => el.text_translate);
 		const wordsEng = this.state.questions.map((el) => el.text);
 
-		this.setState({ wordsRu: wordsRu });
+    this.setState({ wordsRu: wordsRu });
 		this.setState({ wordsEng: wordsEng });
 
 		this.setState({
@@ -93,7 +95,6 @@ class Sprint extends React.Component {
 		this.stats.result = 0;
 		this.stats.errorWords = 0;
 		this.stats.rightWords = 0;
-
 		this.setState({ intervalId: setInterval(this.timer.bind(this), 1000) });
 
 		document.getElementById("btn__start").classList.add("not__visible");
@@ -145,6 +146,7 @@ class Sprint extends React.Component {
 			],
 		});
 	};
+
 
 	close = () => {
 		this.setState({ show: false });
@@ -341,6 +343,7 @@ class Sprint extends React.Component {
 		}
 	};
 
+
 	submit = (answer) => {
 		if (typeof this.state.questions[this.state.page + 1] === "undefined") {
 			this.setState({ endGame: true });
@@ -398,6 +401,7 @@ class Sprint extends React.Component {
 		audio.volume = 0.25;
 		audio.play();
 	};
+
 
 	render() {
 		if (this.state.level === null && !this.state.from) {
@@ -610,6 +614,7 @@ class Sprint extends React.Component {
 				</div>
 			);
 	}
+
 }
 
 function mapStateToProps(state) {
