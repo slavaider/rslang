@@ -210,3 +210,10 @@ h2.title__text {
 		text-align: center;
 	}
 }
+
+
+@media only screen and (width: 768px) {
+	.btn__full-screen{
+		display: none;
+	}
+}

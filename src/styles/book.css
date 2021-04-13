@@ -1,134 +1,133 @@
 p {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .levels__container-book {
-	height: 20vh;
-	width: 80%;
-	align-items: stretch;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	margin: 1rem 0;
+    height: 20vh;
+    width: 80%;
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .level__changer-book {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
-	margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 1rem 0;
 }
 
 .book__group {
-	text-align: center;
+    text-align: center;
 }
 
 .stats__container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .book__stats {
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .stats__items {
-	font-size: 1.5rem;
-	font-weight: 700;
-	margin-right: 4rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-right: 4rem;
 }
 
 .stats__items.true {
-	color: green;
+    color: green;
 }
 
 .stats__items.false {
-	color: red;
+    color: red;
 }
 
 .column__items.book {
-	width: 30%;
-	font-size: 1.2rem;
-	font-weight: 600;
+    width: 30%;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .word__row {
-	width: 85%;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+    width: 85%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .word__learning {
-	padding-left: 2.5rem;
-	font-size: 1.3rem;
-	font-weight: 600;
-	width: 25%;
+    padding-left: 2.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    width: 25%;
 }
 
 .words__table {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .table__learning {
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	border: 0.1rem solid black;
-	padding: 0.5rem 1.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 0.1rem solid black;
+    padding: 0.5rem 1.5rem;
 }
 
 .word__true,
 .word__false {
-	font-size: 1.3rem;
-	font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 600;
 }
 
 @media (max-width: 480px) {
-	.levels__container-book {
-		height: auto;
-	}
+    .levels__container-book {
+        height: auto;
+    }
 
-	.level__changer-book {
-		width: 100%;
-		height: auto;
-		flex-wrap: wrap;
-		justify-content: space-between;
-	}
+    .level__changer-book {
+        width: 100%;
+        height: auto;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
 
-	.book__stats {
-		width: 90%;
-		font-size: 1rem;
-		flex-direction: column;
-	}
+    .book__stats {
+        width: 90%;
+        font-size: 1rem;
+        flex-direction: column;
+    }
 
-	.table__learning {
-		padding: 0.2rem;
-		font-weight: normal;
-	}
+    .table__learning {
+        padding: 0.2rem;
+        font-weight: normal;
+    }
 
-	.column__items.book {
-		font-size: 0.8rem;
-		text-align: center;
-	}
+    .column__items.book {
+        font-size: 0.8rem;
+        text-align: center;
+    }
 
-	.stats__items {
-		font-size: 1rem;
-		margin: 0;
-	}
+    .stats__items {
+        font-size: 1rem;
+        margin: 0;
+    }
 
-	.word__learning {
-		padding-left: 0;
-		font-size: 1rem;
-	}
-
+    .word__learning {
+        padding-left: 0;
+        font-size: 1rem;
+    }
 }
