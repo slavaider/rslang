@@ -1,20 +1,20 @@
 body {
 	width: 100%;
 	margin: 0 auto;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-		sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+		"Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+		"Helvetica Neue", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-
 }
 
 code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
 }
 
 /* Custom css bootstarp styles */
+
 @media (min-width: 1200px) {
 	.navbar-expand-xl {
 		flex-flow: row wrap;
@@ -34,13 +34,15 @@ code {
 	position: relative;
 }
 
-
 @media (max-width: 480px) {
-
 	.btn {
 		margin-top: 1rem;
 		width: 7rem;
 		margin-left: 0rem;
+	}
+
+	.btn.btn-success {
+		margin-top: 0;
 	}
 
 	.btn-group {
@@ -50,13 +52,15 @@ code {
 		justify-content: space-between;
 	}
 
+	.btn-group-end.btn-group {
+		flex-direction: column;
+	}
+
 	.about.row {
 		display: block;
 	}
 
 	.about__card.col {
 		max-width: 90%;
-
 	}
-
 }

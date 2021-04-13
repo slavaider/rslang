@@ -9,7 +9,7 @@
 	width: 50%;
 	font-size: 4.5rem;
 	font-weight: 800;
-	color: teal
+	color: teal;
 }
 
 .hero__img {
@@ -18,7 +18,8 @@
 	object-position: center;
 }
 
-.text__container {}
+.text__container {
+}
 
 .home__text {
 	margin-left: 2.5%;
@@ -29,4 +30,24 @@
 	letter-spacing: 0.001rem;
 	line-height: 1.5rem;
 	margin-bottom: 3rem;
+}
+
+@media only screen and (max-width: 480px) {
+	.title__container {
+		flex-direction: column;
+	}
+
+	.hero__img {
+		width: 100%;
+		object-fit: cover;
+		object-position: center;
+	}
+
+	.home__title {
+		width: 90%;
+		font-size: 3rem;
+		font-weight: 800;
+		text-align: center;
+		color: teal;
+	}
 }

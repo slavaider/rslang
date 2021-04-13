@@ -11,6 +11,20 @@ p {
 	position: relative;
 }
 
+.btn__full-screen {
+	width: 3rem;
+	height: 3rem;
+	position: absolute;
+	top: 0.5rem;
+	right: 1rem;
+	cursor: pointer;
+	background-image: url(../assets/icons/fullscreen-icon.svg);
+}
+
+.btn__full-screen:hover {
+	opacity: 0.75;
+}
+
 .sprint__title {
 	margin: 0 auto;
 	font-size: 2rem;
@@ -187,9 +201,12 @@ p {
 }
 
 @media only screen and (max-width: 480px) {
-
 	.sprint__content {
 		margin-top: 1rem;
+	}
+
+	.btn__full-screen {
+		display: none;
 	}
 
 	.sprint__game-card {
@@ -234,8 +251,8 @@ p {
 		transform: translate(-50%);
 	}
 
-	.game__timer>p,
-	.game__result>p {
+	.game__timer > p,
+	.game__result > p {
 		font-weight: 700;
 		margin: 0;
 		font-size: 1.2rem;
@@ -256,5 +273,4 @@ p {
 		left: 50%;
 		transform: translate(-50%);
 	}
-
 }

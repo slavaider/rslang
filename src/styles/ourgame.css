@@ -7,8 +7,29 @@
 	align-items: center;
 }
 
-@media only screen and (max-width: 480px) {
+.btn__full-screen {
+	width: 3rem;
+	height: 3rem;
+	position: absolute;
+	top: 0.5rem;
+	right: 1rem;
+	cursor: pointer;
+	background-image: url(../assets/icons/fullscreen-icon.svg);
+}
 
+.btn__full-screen:hover {
+	opacity: 0.75;
+}
+
+.text-danger,
+.text-success {
+	font-size: 1.2rem;
+	font-weight: 800;
+	text-align: center;
+	padding-bottom: 0;
+}
+
+@media only screen and (max-width: 480px) {
 	.levels__container-ourgame {
 		width: 90%;
 		height: auto;
@@ -18,4 +39,7 @@
 		flex-direction: column;
 	}
 
+	.btn__full-screen {
+		display: none;
+	}
 }

@@ -27,3 +27,24 @@
 	align-items: center;
 	padding: 0 4rem;
 }
+
+@media only screen and (max-width: 480px) {
+
+	.header {
+		padding: 0;
+		border: black solid 0.1rem;
+		font-size: 0.8rem;
+		font-weight: 400;
+	}
+
+	.games__stats {
+		padding: 0;
+		color: red;
+		font-size: 0.9rem;
+		font-weight: 400;
+	}
+
+	.table__stats {
+		padding: 0 1rem;
+	}
+}
