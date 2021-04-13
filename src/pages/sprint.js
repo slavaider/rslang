@@ -19,6 +19,7 @@ import { group_variant, shuffle } from "../utils";
 import { asyncSetStats } from "../store/actions/stats";
 import { Link } from "react-router-dom";
 
+
 class Sprint extends React.Component {
     constructor(props) {
         super(props);

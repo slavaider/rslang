@@ -1,18 +1,19 @@
 import React from "react";
-import { Button, ButtonGroup, Container, Row, Modal } from "react-bootstrap";
+import {Button, ButtonGroup, Container, Modal, Row} from "react-bootstrap";
 import "../styles/audiocall.css";
 import phones from "../assets/icons/phones.svg";
 import speaker from "../assets/icons/speaker.svg";
-import { Link } from "react-router-dom";
-import { asyncCreateWord } from "../store/actions/words";
-import { asyncGetWords } from "../store/actions/book";
-import { asyncSetStats } from "../store/actions/stats";
-import { connect } from "react-redux";
-import { BASE_URL } from "../config";
-import { group_variant, shuffle } from "../utils";
+import {Link} from "react-router-dom";
+import {asyncCreateWord} from "../store/actions/words";
+import {asyncGetWords} from "../store/actions/book";
+import {asyncSetStats} from "../store/actions/stats";
+import {connect} from "react-redux";
+import {BASE_URL} from "../config";
+import {group_variant, shuffle} from "../utils";
 import Spin from "../components/Spin/Spin";
 import errorSound from "../assets/sounds/error.mp3";
 import okSound from "../assets/sounds/ok.mp3";
+
 class AudioCall extends React.Component {
     state = {
         questions: [],

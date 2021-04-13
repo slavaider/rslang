@@ -27,7 +27,7 @@
 	box-sizing: border-box;
 }
 
-..btn__full-screen {
+.btn__full-screen {
 	width: 3rem;
 	height: 3rem;
 	position: absolute;
