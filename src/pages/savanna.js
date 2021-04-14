@@ -392,7 +392,6 @@ class Savanna extends React.Component {
     };
 
     playSound = (path, volume) => {
-        console.log(path);
         const audio = new Audio(`${BASE_URL}${path}`);
         audio.volume = volume;
         audio.play();
