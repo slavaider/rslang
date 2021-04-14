@@ -398,7 +398,7 @@ class Ourgame extends React.Component {
 												Вернуться в учебник
 											</Button>
 										</Link>
-										<Link to="/book">
+										<Link to="/">
 											<Button
 												variant="info"
 												size="lg"
