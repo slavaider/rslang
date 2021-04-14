@@ -61,8 +61,16 @@ export const asyncGetSettings = (id, token) => {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 }
+            }).catch((e) => {
+                if (e) {
+                    dispatch(getSettings({
+                        translate: true,
+                        actions: true
+                    }))
+                }
             })
-            dispatch(getSettings(response.data.optional))
+            if (response)
+                dispatch(getSettings(response.data.optional))
         }
     }
 }
