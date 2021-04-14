@@ -149,11 +149,10 @@ class Book extends React.Component {
             });
     };
 
-    playSound = (path, volume) => {
-        console.log(path);
+    playSound = (path, volume = this.state.volume) => {
         const audio = new Audio(path);
         audio.volume = volume;
-        audio.play();
+        audio.play().catch((e) => console.log(e));
     };
 
     // Render
@@ -316,22 +315,11 @@ class Book extends React.Component {
                                         <Card.Header>
                                             {item.word}&nbsp;
                                             {item.transcription}&nbsp;
-                                            <div
+                                            <span
                                                 title="Воспроизвести"
                                                 className="audio__icon"
-                                                onClick={() =>
-                                                    this.playSound(
-                                                        `${BASE_URL}${item.audio}`,
-                                                        this.state.volume
-                                                    )
-                                                }
-                                            ></div>
-                                            <span>
-                                                <audio
-                                                    /*                                                         controls={true}
-                                                     */ src={`${BASE_URL}${item.audio}`}
-                                                />
-                                            </span>
+                                                onClick={() => this.playSound(`${BASE_URL}${item.audio}`)}
+                                            />
                                         </Card.Header>
 
                                         <Card.Body>
@@ -362,22 +350,11 @@ class Book extends React.Component {
                                                             item.textMeaning,
                                                     }}
                                                 />
-                                                <div
+                                                <span
                                                     title="Воспроизвести"
                                                     className="audio__icon"
-                                                    onClick={() =>
-                                                        this.playSound(
-                                                            `${BASE_URL}${item.audioMeaning}`,
-                                                            this.state.volume
-                                                        )
-                                                    }
-                                                ></div>
-                                                <span>
-                                                    {/*     <audio
-                                                        controls={true}
-                                                        src={`${BASE_URL}${item.audioMeaning}`}
-                                                    /> */}
-                                                </span>
+                                                    onClick={() => this.playSound(`${BASE_URL}${item.audioMeaning}`)}
+                                                />
                                                 {this.props.translate
                                                     ? item.textMeaningTranslate
                                                     : null}
@@ -389,22 +366,11 @@ class Book extends React.Component {
                                                             item.textExample,
                                                     }}
                                                 />
-                                                <div
+                                                <span
                                                     title="Воспроизвести"
                                                     className="audio__icon"
-                                                    onClick={() =>
-                                                        this.playSound(
-                                                            `${BASE_URL}${item.audioExample}`,
-                                                            this.state.volume
-                                                        )
-                                                    }
-                                                ></div>
-                                                <span>
-                                                 {/*    <audio
-                                                        controls={true}
-                                                        src={`${BASE_URL}${item.audioExample}`}
-                                                    /> */}
-                                                </span>
+                                                    onClick={() => this.playSound(`${BASE_URL}${item.audioExample}`)}
+                                                />
                                                 {this.props.translate
                                                     ? item.textExampleTranslate
                                                     : null}

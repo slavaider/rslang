@@ -32,16 +32,15 @@ class Ourgame extends React.Component {
 		level: null,
 		loading: false,
 		show: true,
-		okSound: okSound,
-		errorSound: errorSound,
-		rightWords: 0,
-		errorWords: 0,
+		answers:[],
+		volume:0.5
 	};
+
 	close = () => {
 		this.setState({ show: false, endGame: false });
 	};
 
-	fullScreen = (e) => {
+	fullScreen = () => {
 		if (document.fullscreenElement) {
 			document.exitFullscreen();
 		} else {
@@ -75,8 +74,28 @@ class Ourgame extends React.Component {
 			}
 		}
 		if (prevState.questions !== this.state.questions) {
-			if (this.state.questions.length !== 0)
-				this.setState({ loading: true });
+			if (this.state.questions.length !== 0) {
+				// Shuffle
+				const copy = this.state.questions
+					.filter(
+						(item) =>
+							item.text_translate !==
+							this.state.questions[this.state.page].text_translate
+					)
+					.map((item) => {
+						return item.text_translate;
+					});
+				const shuffled = shuffle(copy);
+				const four = [
+					shuffled[0],
+					shuffled[1],
+					shuffled[2],
+					shuffled[3],
+					this.state.questions[this.state.page].text_translate,
+				];
+				const final = shuffle(four);
+				this.setState({loading: true, shuffle: final});
+			}
 		}
 	}
 
@@ -142,10 +161,12 @@ class Ourgame extends React.Component {
 						"page",
 						(+localStorage.getItem("page") - 1).toString()
 					);
-				} else this.setState({ block: true });
+				} else {
+					if (this.state.loading) this.setState({block: true});
+				}
 			}
 		}
-		this.setState({ questions: [...this.state.questions, ...words] });
+		this.setState({questions: [...this.state.questions, ...words]});
 	};
 
 	getFromLearning = () => {
@@ -173,22 +194,23 @@ class Ourgame extends React.Component {
 			return words.length < 20;
 		});
 		if (words.length < 20) {
-			this.setState({ learning_turn: false });
+			this.setState({learning_turn: false});
 			this.getFromWords();
 		}
-		this.setState({ questions: words });
+		this.setState({questions: words});
 	};
 
 	getFromHeader = (group) => {
 		const page = +(Math.random() * (30 - 1) + 1).toFixed(0);
 		this.props.getWordsByState(group, page);
-		this.setState({ level: group });
+		this.setState({level: group});
 	};
 
 	answer = (game_type, value) => {
-		const copy = this.props.stats.optional[new Date().toLocaleDateString()];
-		copy.wordPerDay += 1;
-		const game = copy[game_type];
+		// Stats
+		const stat = this.props.stats.optional[new Date().toLocaleDateString()];
+		stat.wordPerDay += 1;
+		const game = stat[game_type];
 		game.count += 1;
 		if (value) {
 			game.success += 1;
@@ -196,24 +218,56 @@ class Ourgame extends React.Component {
 		} else {
 			game.series = 0;
 		}
-		this.props.setStats(this.props.id, this.props.token, copy);
+		this.props.setStats(this.props.id, this.props.token, stat);
+		// Shuffle
+		if (typeof this.state.questions[this.state.page + 1] !== "undefined") {
+			const copy = this.state.questions
+				.filter(
+					(item) =>
+						item.text_translate !==
+						this.state.questions[this.state.page + 1].text_translate
+				)
+				.map((item) => {
+					return item.text_translate;
+				});
+			const shuffled = shuffle(copy);
+			const four = [
+				shuffled[0],
+				shuffled[1],
+				shuffled[2],
+				shuffled[3],
+				this.state.questions[this.state.page + 1].text_translate,
+			];
+			const final = shuffle(four);
+			this.setState({shuffle: final});
+		}
 	};
 
 	submit = (e) => {
 		e.preventDefault();
+		if (typeof this.state.questions[this.state.page + 1] === "undefined") {
+			this.setState({endgame: true});
+		}
 		let group = group_variant[+localStorage.getItem("group") - 1];
 		if (this.state.level) {
 			group = group_variant[this.state.level - 1];
 		}
 		const answer = e.target.answer.value.toLowerCase();
 		if (answer === this.state.questions[this.state.page].text) {
-			this.play(this.state.okSound);
-			this.setState({ rightWords: this.state.rightWords + 1 });
-			this.answer("our", true);
+			this.play(okSound);
 			this.setState((prevState) => ({
 				page: prevState.page + 1,
-				right: true,
+				answers: [
+					...prevState.answers,
+					{
+						en: this.state.questions[this.state.page].text,
+						ru: this.state.questions[this.state.page].text_translate,
+						audio: this.state.questions[this.state.page].audio,
+						right: true
+					}
+				],
 			}));
+			this.answer("our", true);
 			this.props.createWord(
 				"learn",
 				group,
@@ -231,13 +285,20 @@ class Ourgame extends React.Component {
 				this.state.questions[this.state.page].hard
 			);
 		} else {
-			this.play(this.state.errorSound);
-			this.setState({ errorWords: this.state.errorWords + 1 });
-			this.answer("our", false);
+			this.play(errorSound);
 			this.setState((prevState) => ({
 				page: prevState.page + 1,
-				right: false,
+				answers: [
+					...prevState.answers,
+					{
+						en: this.state.questions[this.state.page].text,
+						ru: this.state.questions[this.state.page].text_translate,
+						audio: this.state.questions[this.state.page].audio,
+						right: false
+					}
+				],
 			}));
+			this.answer("our", false);
 			this.props.createWord(
 				"learn",
 				group,
@@ -255,15 +316,18 @@ class Ourgame extends React.Component {
 				this.state.questions[this.state.page].hard
 			);
 		}
-		if (typeof this.state.questions[this.state.page + 1] === "undefined") {
-			this.setState({ endgame: true });
-		}
 	};
 
-	play = (props) => {
-		const audio = new Audio(props);
+	play = (src) => {
+		const audio = new Audio(src);
 		audio.volume = 0.25;
-		audio.play();
+		audio.play().catch((e) => console.log(e));
+	};
+
+	playSound = (path, volume = this.state.volume) => {
+		const audio = new Audio(`${BASE_URL}${path}`);
+		audio.volume = volume;
+		audio.play().catch((e) => console.log(e));
 	};
 
 	render() {
@@ -361,14 +425,58 @@ class Ourgame extends React.Component {
 									</Modal.Title>
 								</Modal.Header>
 								<Modal.Body>
-									<p className="modal-text">
-										Верных ответов:
-										{this.state.rightWords}
-									</p>
-									<p className="modal-text">
-										Неверных ответов:
-										{this.state.errorWords}
-									</p>
+									<div className="modal-text">
+										Правильные ответы:
+										{this.state.answers.filter((item) => item.right).map(
+											(item) => (
+												<div className="answer__rows" key={"right" + item.en}>
+													<div
+														title="Озвучить"
+														className="audio__listen"
+														onClick={() => this.playSound(item.audio)}
+													/>
+													<p className="modal-text-right">
+														{item.en}
+													</p>
+
+													<p className="modal-text-right">
+														-
+													</p>
+
+													<p className="modal-text-right">
+														{item.ru}
+													</p>
+												</div>
+											)
+										)}
+									</div>
+									<div className="modal-text">
+										Не правильные ответы:
+										{this.state.answers.filter((item) => item.right === false).map(
+											(item) => (
+												<div className="answer__rows" key={"wrong" + item.en}>
+													<div
+														title="Озвучить"
+														className="audio__listen"
+														onClick={() =>
+															this.playSound(item.audio)
+														}
+													/>
+													<p className="modal-text-error">
+														{item.en}
+													</p>
+
+													<p className="modal-text-error">
+														-
+													</p>
+
+													<p className="modal-text-error">
+														{item.ru}
+													</p>
+												</div>
+											)
+										)}
+									</div>
 								</Modal.Body>
 								<Modal.Footer>
 									<Button
@@ -393,12 +501,11 @@ class Ourgame extends React.Component {
 							<div
 								className="btn__full-screen"
 								onClick={this.fullScreen}
-							></div>
+							/>
 							<Row className="justify-content-center">
 								<Card
 									bg={
-										this.state.questions[this.state.page]
-											.variant
+										this.state.questions[this.state.page].variant
 									}
 									key={
 										"ourgame" +
@@ -409,11 +516,7 @@ class Ourgame extends React.Component {
 								>
 									<Card.Img
 										variant="top"
-										src={`${BASE_URL}${
-											this.state.questions[
-												this.state.page
-											].img
-										}`}
+										src={`${BASE_URL}${this.state.questions[this.state.page].img}`}
 									/>
 									<Card.Text className="text-center mt-2">
 										<span
@@ -461,9 +564,7 @@ class Ourgame extends React.Component {
 						</>
 					)}
 				</Container>
-			) : (
-				<Spin />
-			);
+			) : <Spin />;
 	}
 }
 

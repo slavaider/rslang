@@ -25,18 +25,11 @@ class AudioCall extends React.Component {
         level: null,
         loading: false,
         show: true,
-        okSound: okSound,
-        errorSound: errorSound,
-        answerRightEn: [],
-        answerErrorEn: [],
-        answerRightRu: [],
-        answerErrorRu: [],
-        answerAudioRightEn: [],
-        answerAudioErrorEn: [],
+        answers: [],
         volume: 0.5,
     };
 
-    fullScreen = (e) => {
+    fullScreen = () => {
         if (document.fullscreenElement) {
             document.exitFullscreen();
         } else {
@@ -45,7 +38,7 @@ class AudioCall extends React.Component {
     };
 
     close = () => {
-        this.setState({ show: false, endGame: false });
+        this.setState({show: false, endGame: false});
     };
 
     componentDidMount() {
@@ -94,7 +87,7 @@ class AudioCall extends React.Component {
                     this.state.questions[this.state.page].text_translate,
                 ];
                 const final = shuffle(four);
-                this.setState({ loading: true, shuffle: final });
+                this.setState({loading: true, shuffle: final});
             }
         }
     }
@@ -161,10 +154,12 @@ class AudioCall extends React.Component {
                         "page",
                         (+localStorage.getItem("page") - 1).toString()
                     );
-                } else this.setState({ block: true });
+                } else {
+                    if (this.state.loading) this.setState({block: true});
+                }
             }
         }
-        this.setState({ questions: [...this.state.questions, ...words] });
+        this.setState({questions: [...this.state.questions, ...words]});
     };
 
     getFromLearning = () => {
@@ -192,16 +187,16 @@ class AudioCall extends React.Component {
             return words.length < 20;
         });
         if (words.length < 20) {
-            this.setState({ learning_turn: false });
+            this.setState({learning_turn: false});
             this.getFromWords();
         }
-        this.setState({ questions: words });
+        this.setState({questions: words});
     };
 
     getFromHeader = (group) => {
         const page = +(Math.random() * (30 - 1) + 1).toFixed(0);
         this.props.getWordsByState(group, page);
-        this.setState({ level: group });
+        this.setState({level: group});
     };
 
     answer = (game_type, value) => {
@@ -237,43 +232,31 @@ class AudioCall extends React.Component {
                 this.state.questions[this.state.page + 1].text_translate,
             ];
             const final = shuffle(four);
-            this.setState({ shuffle: final });
+            this.setState({shuffle: final});
         }
     };
 
     submit = (answer) => {
         if (typeof this.state.questions[this.state.page + 1] === "undefined") {
-            this.setState({ endgame: true });
+            this.setState({endgame: true});
         }
         let group = group_variant[+localStorage.getItem("group") - 1];
+        if (this.state.level) {
+            group = group_variant[this.state.level - 1];
+        }
         if (answer === this.state.questions[this.state.page].text_translate) {
-            this.play(this.state.okSound);
-
-            this.setState((prevState) => ({
-                answerRightEn: [
-                    ...prevState.answerRightEn,
-                    this.state.questions[this.state.page].text,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerRightRu: [
-                    ...prevState.answerRightRu,
-
-                    this.state.questions[this.state.page].text_translate,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerAudioRightEn: [
-                    ...prevState.answerAudioRightEn,
-
-                    this.state.questions[this.state.page].audio,
-                ],
-            }));
-
+            this.play(okSound);
             this.setState((prevState) => ({
                 page: prevState.page + 1,
+                answers: [
+                    ...prevState.answers,
+                    {
+                        en: this.state.questions[this.state.page].text,
+                        ru: this.state.questions[this.state.page].text_translate,
+                        audio: this.state.questions[this.state.page].audio,
+                        right: true
+                    }
+                ],
             }));
             this.answer("audio", true);
             this.props.createWord(
@@ -293,31 +276,18 @@ class AudioCall extends React.Component {
                 this.state.questions[this.state.page].hard
             );
         } else {
-            this.play(this.state.errorSound);
-
-            this.setState((prevState) => ({
-                answerErrorEn: [
-                    ...prevState.answerErrorEn,
-                    this.state.questions[this.state.page].text,
-                ],
-            }));
-            this.setState((prevState) => ({
-                answerErrorRu: [
-                    ...prevState.answerErrorRu,
-                    this.state.questions[this.state.page].text_translate,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerAudioErrorEn: [
-                    ...prevState.answerAudioErrorEn,
-
-                    this.state.questions[this.state.page].audio,
-                ],
-            }));
-
+            this.play(errorSound);
             this.setState((prevState) => ({
                 page: prevState.page + 1,
+                answers: [
+                    ...prevState.answers,
+                    {
+                        en: this.state.questions[this.state.page].text,
+                        ru: this.state.questions[this.state.page].text_translate,
+                        audio: this.state.questions[this.state.page].audio,
+                        right: false
+                    }
+                ],
             }));
             this.answer("audio", false);
             this.props.createWord(
@@ -339,16 +309,16 @@ class AudioCall extends React.Component {
         }
     };
 
-    play = (props) => {
-        const audio = new Audio(props);
+    play = (src) => {
+        const audio = new Audio(src);
         audio.volume = 0.25;
-        audio.play();
+        audio.play().catch((e) => console.log(e));
     };
 
-    playSound = (path, volume) => {
+    playSound = (path, volume = this.state.volume) => {
         const audio = new Audio(`${BASE_URL}${path}`);
         audio.volume = volume;
-        audio.play();
+        audio.play().catch((e) => console.log(e));
     };
 
     render() {
@@ -402,7 +372,7 @@ class AudioCall extends React.Component {
             );
         } else
             return (this.state.loading && this.state.questions.length >= 20) ||
-                this.state.block ? (
+            this.state.block ? (
                 <Container>
                     {this.state.endgame ? (
                         <>
@@ -448,83 +418,53 @@ class AudioCall extends React.Component {
                                 <Modal.Body>
                                     <div className="modal-text">
                                         Правильные ответы:
-                                        {this.state.answerRightEn.map(
-                                            (el, ind) => (
-                                                <>
-                                                    <div className="answer__rows">
-                                                        <div
-                                                            title="Озвучить"
-                                                            className="audio__listen"
-                                                            onClick={() =>
-                                                                this.playSound(
-                                                                    this.state
-                                                                        .answerAudioRightEn[
-                                                                        ind
-                                                                    ],
-                                                                    this.state
-                                                                        .volume
-                                                                )
-                                                            }
-                                                        ></div>
-                                                        <p className="modal-text-right">
-                                                            {el}
-                                                        </p>
+                                        {this.state.answers.filter((item) => item.right).map(
+                                            (item) => (
+                                                <div className="answer__rows" key={"right" + item.en}>
+                                                    <div
+                                                        title="Озвучить"
+                                                        className="audio__listen"
+                                                        onClick={() => this.playSound(item.audio)}
+                                                    />
+                                                    <p className="modal-text-right">
+                                                        {item.en}
+                                                    </p>
 
-                                                        <p className="modal-text-right">
-                                                            -
-                                                        </p>
+                                                    <p className="modal-text-right">
+                                                        -
+                                                    </p>
 
-                                                        <p className="modal-text-right">
-                                                            {
-                                                                this.state
-                                                                    .answerRightRu[
-                                                                    ind
-                                                                ]
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                </>
+                                                    <p className="modal-text-right">
+                                                        {item.ru}
+                                                    </p>
+                                                </div>
                                             )
                                         )}
                                     </div>
                                     <div className="modal-text">
                                         Не правильные ответы:
-                                        {this.state.answerErrorEn.map(
-                                            (el, ind) => (
-                                                <>
-                                                    <div className="answer__rows">
-                                                        <div
-                                                            title="Озвучить"
-                                                            className="audio__listen"
-                                                            onClick={() =>
-                                                                this.playSound(
-                                                                    this.state
-                                                                        .answerAudioErrorEn[
-                                                                        ind
-                                                                    ],
-                                                                    this.state
-                                                                        .volume
-                                                                )
-                                                            }
-                                                        ></div>
-                                                        <p className="modal-text-error">
-                                                            {el}
-                                                        </p>
+                                        {this.state.answers.filter((item) => item.right === false).map(
+                                            (item) => (
+                                                <div className="answer__rows" key={"wrong" + item.en}>
+                                                    <div
+                                                        title="Озвучить"
+                                                        className="audio__listen"
+                                                        onClick={() =>
+                                                            this.playSound(item.audio)
+                                                        }
+                                                    />
+                                                    <p className="modal-text-error">
+                                                        {item.en}
+                                                    </p>
 
-                                                        <p className="modal-text-error">
-                                                            -
-                                                        </p>
+                                                    <p className="modal-text-error">
+                                                        -
+                                                    </p>
 
-                                                        <p className="modal-text-error">
-                                                            {
-                                                                this.state
-                                                                    .answerErrorRu[
-                                                                    ind
-                                                                ]
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                </>
+                                                    <p className="modal-text-error">
+                                                        {item.ru}
+                                                    </p>
+                                                </div>
                                             )
                                         )}
                                     </div>
@@ -551,7 +491,7 @@ class AudioCall extends React.Component {
                                 <div
                                     className="btn__full-screen"
                                     onClick={this.fullScreen}
-                                ></div>
+                                />
                             </div>
                             <div className="audiocall__images">
                                 <img
@@ -561,26 +501,13 @@ class AudioCall extends React.Component {
                                 />
                                 <img
                                     alt="speaker"
-                                    onClick={() =>
-                                        this.playSound(
-                                            this.state.questions[
-                                                this.state.page
-                                            ].audio,
-                                            this.state.volume
-                                        )
-                                    }
+                                    onClick={() =>this.playSound(this.state.questions[this.state.page].audio)}
                                     src={speaker}
                                     className="speaker__img"
                                 />
                                 <img
-                                    alt={
-                                        this.state.questions[this.state.page]
-                                            .img
-                                    }
-                                    src={`${BASE_URL}${
-                                        this.state.questions[this.state.page]
-                                            .img
-                                    }`}
+                                    alt={this.state.questions[this.state.page].img}
+                                    src={`${BASE_URL}${this.state.questions[this.state.page].img}`}
                                     className="answer__img-audiocall"
                                 />
                             </div>
@@ -605,9 +532,7 @@ class AudioCall extends React.Component {
                         </div>
                     )}
                 </Container>
-            ) : (
-                <Spin />
-            );
+            ) : <Spin/>;
     }
 }
 
