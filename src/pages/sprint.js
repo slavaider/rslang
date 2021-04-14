@@ -3,21 +3,15 @@ import "../styles/sprint.css";
 import sprint from "../assets/images/sprint.jpg";
 import errorSound from "../assets/sounds/error.mp3";
 import okSound from "../assets/sounds/ok.mp3";
-import { asyncCreateWord } from "../store/actions/words";
-import { asyncGetWords } from "../store/actions/book";
-import { connect } from "react-redux";
-import { BASE_URL } from "../config";
-import {
-    Button,
-    Container,
-    Modal,
-    Row,
-    ButtonGroup,
-    Spinner,
-} from "react-bootstrap";
-import { group_variant, shuffle } from "../utils";
-import { asyncSetStats } from "../store/actions/stats";
-import { Link } from "react-router-dom";
+import {asyncCreateWord} from "../store/actions/words";
+import {asyncGetWords} from "../store/actions/book";
+import {connect} from "react-redux";
+import {BASE_URL} from "../config";
+import {Button, ButtonGroup, Container, Modal, Row,} from "react-bootstrap";
+import {group_variant, shuffle} from "../utils";
+import {asyncSetStats} from "../store/actions/stats";
+import {Link} from "react-router-dom";
+import Spin from "../components/Spin/Spin";
 
 
 class Sprint extends React.Component {
@@ -50,17 +44,12 @@ class Sprint extends React.Component {
             stats: null,
             rightWords: 0,
             errorWords: 0,
-            answerRightEn: [],
-            answerErrorEn: [],
-            answerRightRu: [],
-            answerErrorRu: [],
-            answerAudioRightEn: [],
-            answerAudioErrorEn: [],
+            answers: [],
             volume: 0.5,
         };
     }
 
-    fullScreen = (e) => {
+    fullScreen = () => {
         if (document.fullscreenElement) {
             document.exitFullscreen();
         } else {
@@ -73,25 +62,25 @@ class Sprint extends React.Component {
             currentCount: this.state.currentCount - 1,
         });
         if (this.state.currentCount < 1) {
-            this.setState({ countOn: false });
+            this.setState({countOn: false});
             document
                 .getElementById("btn__start")
                 .classList.remove("not__visible");
             document.getElementById("game__body").classList.add("not__visible");
             clearInterval(this.state.intervalId);
-            this.setState({ currentCount: 60 });
-            this.setState({ endGame: true });
+            this.setState({currentCount: 60});
+            this.setState({endGame: true});
         }
     }
 
-    startGame = (props) => {
-        this.setState({ countOn: true, show: true });
+    startGame = () => {
+        this.setState({countOn: true, show: true});
 
         const wordsRu = this.state.questions.map((el) => el.text_translate);
         const wordsEng = this.state.questions.map((el) => el.text);
 
-        this.setState({ wordsRu: wordsRu });
-        this.setState({ wordsEng: wordsEng });
+        this.setState({wordsRu: wordsRu});
+        this.setState({wordsEng: wordsEng});
 
         this.setState({
             wordEng: wordsEng[Math.floor(Math.random() * wordsEng.length)],
@@ -102,7 +91,7 @@ class Sprint extends React.Component {
         this.stats.errorWords = 0;
         this.stats.rightWords = 0;
 
-        this.setState({ intervalId: setInterval(this.timer.bind(this), 1000) });
+        this.setState({intervalId: setInterval(this.timer.bind(this), 1000)});
 
         document.getElementById("btn__start").classList.add("not__visible");
         document.getElementById("game__body").classList.remove("not__visible");
@@ -110,7 +99,7 @@ class Sprint extends React.Component {
 
     handleClick = (e) => {
         if (this.state.countOn === true) {
-            this.setState({ buttonId: e.target.id });
+            this.setState({buttonId: e.target.id});
             this.game(e.target.id);
         }
     };
@@ -123,39 +112,39 @@ class Sprint extends React.Component {
             if (indEnglish === indRussian) {
                 this.stats.rightWords += 1;
                 this.stats.result = this.stats.result + this.stats.points;
-                this.play(this.state.okSound);
+                this.play(okSound);
                 this.submit(true);
             } else {
                 this.stats.errorWords += 1;
-                this.play(this.state.errorSound);
+                this.play(errorSound);
                 this.submit(false);
             }
         } else if (buttonId === "false") {
             if (indEnglish !== indRussian) {
                 this.stats.rightWords += 1;
                 this.stats.result = this.stats.result + this.stats.points;
-                this.play(this.state.okSound);
+                this.play(okSound);
                 this.submit(true);
             } else {
                 this.stats.errorWords += 1;
-                this.play(this.state.errorSound);
+                this.play(errorSound);
                 this.submit(false);
             }
         }
         this.setState({
             wordEng: this.state.wordsEng[
                 Math.floor(Math.random() * this.state.wordsEng.length)
-            ],
+                ],
         });
         this.setState({
             wordRu: this.state.wordsRu[
                 Math.floor(Math.random() * this.state.wordsRu.length)
-            ],
+                ],
         });
     };
 
     close = () => {
-        this.setState({ show: false });
+        this.setState({show: false});
     };
 
     componentWillUnmount() {
@@ -205,7 +194,7 @@ class Sprint extends React.Component {
                     this.state.questions[this.state.page].text_translate,
                 ];
                 const final = shuffle(four);
-                this.setState({ loading: true, shuffle: final });
+                this.setState({loading: true, shuffle: final});
             }
         }
     }
@@ -272,10 +261,12 @@ class Sprint extends React.Component {
                         "page",
                         (+localStorage.getItem("page") - 1).toString()
                     );
-                } else this.setState({ block: true });
+                } else {
+                    if (this.state.loading) this.setState({block: true});
+                }
             }
         }
-        this.setState({ questions: [...this.state.questions, ...words] });
+        this.setState({questions: [...this.state.questions, ...words]});
     };
 
     getFromLearning = () => {
@@ -303,16 +294,16 @@ class Sprint extends React.Component {
             return words.length < 20;
         });
         if (words.length < 20) {
-            this.setState({ learning_turn: false });
+            this.setState({learning_turn: false});
             this.getFromWords();
         }
-        this.setState({ questions: words });
+        this.setState({questions: words});
     };
 
     getFromHeader = (group) => {
         const page = +(Math.random() * (30 - 1) + 1).toFixed(0);
         this.props.getWordsByState(group, page);
-        this.setState({ level: group });
+        this.setState({level: group});
     };
 
     answer = (game_type, value) => {
@@ -345,45 +336,33 @@ class Sprint extends React.Component {
                 this.state.questions[this.state.page + 1].text_translate,
             ];
             const final = shuffle(four);
-            this.setState({ shuffle: final });
+            this.setState({shuffle: final});
         }
     };
 
     submit = (answer) => {
         if (typeof this.state.questions[this.state.page + 1] === "undefined") {
-            this.setState({ endGame: true });
+            this.setState({endGame: true});
         }
         let group = group_variant[+localStorage.getItem("group") - 1];
+        if (this.state.level) {
+            group = group_variant[this.state.level - 1];
+        }
         if (answer === true) {
             this.setState((prevState) => ({
                 page: prevState.page + 1,
-            }));
-
-            this.setState((prevState) => ({
-                answerRightEn: [
-                    ...prevState.answerRightEn,
-                    this.state.questions[this.state.page].text,
+                rightWords: prevState.rightWords + 1,
+                answers: [
+                    ...prevState.answers,
+                    {
+                        en: this.state.questions[this.state.page].text,
+                        ru: this.state.questions[this.state.page].text_translate,
+                        audio: this.state.questions[this.state.page].audio,
+                        right: true
+                    }
                 ],
             }));
-
-            this.setState((prevState) => ({
-                answerRightRu: [
-                    ...prevState.answerRightRu,
-
-                    this.state.questions[this.state.page].text_translate,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerAudioRightEn: [
-                    ...prevState.answerAudioRightEn,
-
-                    this.state.questions[this.state.page].audio,
-                ],
-            }));
-
             this.answer("sprint", true);
-            this.setState({ rightWords: this.state.rightWords + 1 });
             this.props.createWord(
                 "learn",
                 group,
@@ -402,31 +381,19 @@ class Sprint extends React.Component {
             );
         } else {
             this.setState((prevState) => ({
-                answerErrorEn: [
-                    ...prevState.answerErrorEn,
-                    this.state.questions[this.state.page].text,
-                ],
-            }));
-            this.setState((prevState) => ({
-                answerErrorRu: [
-                    ...prevState.answerErrorRu,
-                    this.state.questions[this.state.page].text_translate,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerAudioErrorEn: [
-                    ...prevState.answerAudioErrorEn,
-
-                    this.state.questions[this.state.page].audio,
-                ],
-            }));
-
-            this.setState((prevState) => ({
                 page: prevState.page + 1,
+                errorWords: prevState.errorWords + 1,
+                answers: [
+                    ...prevState.answers,
+                    {
+                        en: this.state.questions[this.state.page].text,
+                        ru: this.state.questions[this.state.page].text_translate,
+                        audio: this.state.questions[this.state.page].audio,
+                        right: false
+                    }
+                ],
             }));
             this.answer("sprint", false);
-            this.setState({ errorWords: this.state.errorWords + 1 });
             this.props.createWord(
                 "learn",
                 group,
@@ -446,16 +413,16 @@ class Sprint extends React.Component {
         }
     };
 
-    play = (props) => {
-        const audio = new Audio(props);
+    play = (src) => {
+        const audio = new Audio(src);
         audio.volume = 0.25;
-        audio.play();
+        audio.play().catch((e) => console.log(e));
     };
 
-    playSound = (path, volume) => {
+    playSound = (path, volume = this.state.volume) => {
         const audio = new Audio(`${BASE_URL}${path}`);
         audio.volume = volume;
-        audio.play();
+        audio.play().catch((e) => console.log(e));
     };
 
     render() {
@@ -509,7 +476,7 @@ class Sprint extends React.Component {
             );
         } else
             return (this.state.loading && this.state.questions.length >= 20) ||
-                this.state.block ? (
+            this.state.block ? (
                 <Container>
                     {this.state.endGame ? (
                         <>
@@ -557,88 +524,54 @@ class Sprint extends React.Component {
                                     </Modal.Header>
                                     <Modal.Body>
                                         <div className="modal-text">
-                                            Верных ответов:
-                                            {this.state.answerRightEn.map(
-                                                (el, ind) => (
-                                                    <>
-                                                        <div className="answer__rows">
-                                                            <div
-                                                                title="Озвучить"
-                                                                className="audio__listen"
-                                                                onClick={() =>
-                                                                    this.playSound(
-                                                                        this
-                                                                            .state
-                                                                            .answerAudioRightEn[
-                                                                            ind
-                                                                        ],
-                                                                        this
-                                                                            .state
-                                                                            .volume
-                                                                    )
-                                                                }
-                                                            ></div>
-                                                            <p className="modal-text-right">
-                                                                {el}
-                                                            </p>
+                                            Правильные ответы:
+                                            {this.state.answers.filter((item) => item.right).map(
+                                                (item) => (
+                                                    <div className="answer__rows" key={"right" + item.en}>
+                                                        <div
+                                                            title="Озвучить"
+                                                            className="audio__listen"
+                                                            onClick={() => this.playSound(item.audio)}
+                                                        />
+                                                        <p className="modal-text-right">
+                                                            {item.en}
+                                                        </p>
 
-                                                            <p className="modal-text-right">
-                                                                -
-                                                            </p>
+                                                        <p className="modal-text-right">
+                                                            -
+                                                        </p>
 
-                                                            <p className="modal-text-right">
-                                                                {
-                                                                    this.state
-                                                                        .answerRightRu[
-                                                                        ind
-                                                                    ]
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </>
+                                                        <p className="modal-text-right">
+                                                            {item.ru}
+                                                        </p>
+                                                    </div>
                                                 )
                                             )}
                                         </div>
                                         <div className="modal-text">
-                                            Неверных ответов:
-                                            {this.state.answerErrorEn.map(
-                                                (el, ind) => (
-                                                    <>
-                                                        <div className="answer__rows">
-                                                            <div
-                                                                title="Озвучить"
-                                                                className="audio__listen"
-                                                                onClick={() =>
-                                                                    this.playSound(
-                                                                        this
-                                                                            .state
-                                                                            .answerAudioErrorEn[
-                                                                            ind
-                                                                        ],
-                                                                        this
-                                                                            .state
-                                                                            .volume
-                                                                    )
-                                                                }
-                                                            ></div>
-                                                            <p className="modal-text-error">
-                                                                {el}
-                                                            </p>
+                                            Не правильные ответы:
+                                            {this.state.answers.filter((item) => item.right === false).map(
+                                                (item) => (
+                                                    <div className="answer__rows" key={"wrong" + item.en}>
+                                                        <div
+                                                            title="Озвучить"
+                                                            className="audio__listen"
+                                                            onClick={() =>
+                                                                this.playSound(item.audio)
+                                                            }
+                                                        />
+                                                        <p className="modal-text-error">
+                                                            {item.en}
+                                                        </p>
 
-                                                            <p className="modal-text-error">
-                                                                -
-                                                            </p>
+                                                        <p className="modal-text-error">
+                                                            -
+                                                        </p>
 
-                                                            <p className="modal-text-error">
-                                                                {
-                                                                    this.state
-                                                                        .answerErrorRu[
-                                                                        ind
-                                                                    ]
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </>
+                                                        <p className="modal-text-error">
+                                                            {item.ru}
+                                                        </p>
+                                                    </div>
                                                 )
                                             )}
                                         </div>
@@ -665,7 +598,7 @@ class Sprint extends React.Component {
                             <div
                                 className="btn__full-screen"
                                 onClick={this.fullScreen}
-                            ></div>
+                            />
                             <div className="sprint__bg">
                                 <div className="game__timer">
                                     <p> Время</p>
@@ -684,7 +617,7 @@ class Sprint extends React.Component {
                                     </button>
                                 </div>
                                 <div className="sprint__game-card">
-                                    <div className="game__card-title"></div>
+                                    <div className="game__card-title"/>
                                     <div
                                         className="game__body not__visible"
                                         id="game__body"
@@ -697,7 +630,7 @@ class Sprint extends React.Component {
                                         </div>
                                     </div>
 
-                                    <div className="game__card-vector"></div>
+                                    <div className="game__card-vector"/>
 
                                     <button
                                         className="btn__true"
@@ -733,14 +666,7 @@ class Sprint extends React.Component {
                         </div>
                     )}
                 </Container>
-            ) : (
-                <div
-                    className="d-flex justify-content-center align-items-center"
-                    style={{ minHeight: 374 }}
-                >
-                    <Spinner size="lg" animation="border" variant="primary" />
-                </div>
-            );
+            ) : <Spin/>
     }
 }
 
@@ -761,9 +687,11 @@ function mapDispatchToProps(dispatch) {
             type,
             group,
             value,
+            translate,
             wordId,
             image,
             textExample,
+            textExampleTranslate,
             userId,
             token,
             fail,
@@ -776,9 +704,11 @@ function mapDispatchToProps(dispatch) {
                     type,
                     group,
                     value,
+                    translate,
                     wordId,
                     image,
                     textExample,
+                    textExampleTranslate,
                     userId,
                     token,
                     fail,

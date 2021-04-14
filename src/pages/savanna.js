@@ -1,24 +1,18 @@
 import React from "react";
-import {
-    Button,
-    ButtonGroup,
-    Container,
-    Row,
-    Spinner,
-    Modal,
-} from "react-bootstrap";
+import {Button, ButtonGroup, Container, Modal, Row} from "react-bootstrap";
 import "../styles/savanna.css";
 import savannah from "../assets/images/savannah.jpg";
 import heart from "../assets/icons/heart.svg";
-import { BASE_URL } from "../config";
-import { asyncCreateWord } from "../store/actions/words";
-import { asyncGetWords } from "../store/actions/book";
-import { asyncSetStats } from "../store/actions/stats";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { group_variant, shuffle } from "../utils";
+import {BASE_URL} from "../config";
+import {asyncCreateWord} from "../store/actions/words";
+import {asyncGetWords} from "../store/actions/book";
+import {asyncSetStats} from "../store/actions/stats";
+import {connect} from "react-redux";
+import {Link} from "react-router-dom";
+import {group_variant, shuffle} from "../utils";
 import errorSound from "../assets/sounds/error.mp3";
 import okSound from "../assets/sounds/ok.mp3";
+import Spin from "../components/Spin/Spin";
 
 export function hearts(n) {
     const hearts = [
@@ -71,22 +65,15 @@ class Savanna extends React.Component {
         level: null,
         loading: false,
         show: true,
-        okSound: okSound,
-        errorSound: errorSound,
-        answerRightEn: [],
-        answerErrorEn: [],
-        answerRightRu: [],
-        answerErrorRu: [],
-        answerAudioRightEn: [],
-        answerAudioErrorEn: [],
+        answers: [],
         volume: 0.5,
     };
 
     close = () => {
-        this.setState({ show: false, endGame: false });
+        this.setState({show: false, endGame: false});
     };
 
-    fullScreen = (e) => {
+    fullScreen = () => {
         if (document.fullscreenElement) {
             document.exitFullscreen();
         } else {
@@ -136,10 +123,11 @@ class Savanna extends React.Component {
                     shuffled[0],
                     shuffled[1],
                     shuffled[2],
+                    shuffled[3],
                     this.state.questions[this.state.page].text_translate,
                 ];
                 const final = shuffle(four);
-                this.setState({ loading: true, shuffle: final });
+                this.setState({loading: true, shuffle: final});
             }
         }
     }
@@ -206,10 +194,12 @@ class Savanna extends React.Component {
                         "page",
                         (+localStorage.getItem("page") - 1).toString()
                     );
-                } else this.setState({ block: true });
+                } else {
+                    if (this.state.loading) this.setState({block: true});
+                }
             }
         }
-        this.setState({ questions: [...this.state.questions, ...words] });
+        this.setState({questions: [...this.state.questions, ...words]});
     };
 
     getFromLearning = () => {
@@ -237,23 +227,23 @@ class Savanna extends React.Component {
             return words.length < 20;
         });
         if (words.length < 20) {
-            this.setState({ learning_turn: false });
+            this.setState({learning_turn: false});
             this.getFromWords();
         }
-        this.setState({ questions: words });
+        this.setState({questions: words});
     };
 
     getFromHeader = (group) => {
         const page = +(Math.random() * (30 - 1) + 1).toFixed(0);
         this.props.getWordsByState(group, page);
-        this.setState({ level: group });
+        this.setState({level: group});
     };
 
     answer = (game_type, value) => {
         // Stats
-        const copy = this.props.stats.optional[new Date().toLocaleDateString()];
-        copy.wordPerDay += 1;
-        const game = copy[game_type];
+        const stat = this.props.stats.optional[new Date().toLocaleDateString()];
+        stat.wordPerDay += 1;
+        const game = stat[game_type];
         game.count += 1;
         if (value) {
             game.success += 1;
@@ -261,7 +251,7 @@ class Savanna extends React.Component {
         } else {
             game.series = 0;
         }
-        this.props.setStats(this.props.id, this.props.token, copy);
+        this.props.setStats(this.props.id, this.props.token, stat);
         // Shuffle
         if (typeof this.state.questions[this.state.page + 1] !== "undefined") {
             const copy = this.state.questions
@@ -278,47 +268,35 @@ class Savanna extends React.Component {
                 shuffled[0],
                 shuffled[1],
                 shuffled[2],
+                shuffled[3],
                 this.state.questions[this.state.page + 1].text_translate,
             ];
             const final = shuffle(four);
-            this.setState({ shuffle: final });
+            this.setState({shuffle: final});
         }
     };
 
     submit = (answer) => {
-        if (this.state.lives === 1) this.setState({ endgame: true });
-        if (typeof this.state.questions[this.state.page + 1] === "undefined") {
-            this.setState({ endgame: true });
+        if (typeof this.state.questions[this.state.page + 1] === "undefined" || this.state.lives === 1) {
+            this.setState({endgame: true});
         }
         let group = group_variant[+localStorage.getItem("group") - 1];
+        if (this.state.level) {
+            group = group_variant[this.state.level - 1];
+        }
         if (answer === this.state.questions[this.state.page].text_translate) {
-			this.play(this.state.okSound);
-			
-            this.setState((prevState) => ({
-                answerRightEn: [
-                    ...prevState.answerRightEn,
-                    this.state.questions[this.state.page].text,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerRightRu: [
-                    ...prevState.answerRightRu,
-
-                    this.state.questions[this.state.page].text_translate,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerAudioRightEn: [
-                    ...prevState.answerAudioRightEn,
-
-                    this.state.questions[this.state.page].audio,
-                ],
-            }));
-
+            this.play(okSound);
             this.setState((prevState) => ({
                 page: prevState.page + 1,
+                answers: [
+                    ...prevState.answers,
+                    {
+                        en: this.state.questions[this.state.page].text,
+                        ru: this.state.questions[this.state.page].text_translate,
+                        audio: this.state.questions[this.state.page].audio,
+                        right: true
+                    }
+                ],
             }));
             this.answer("savanna", true);
             this.props.createWord(
@@ -338,32 +316,19 @@ class Savanna extends React.Component {
                 this.state.questions[this.state.page].hard
             );
         } else {
-            this.setState((prevState) => ({
-                answerErrorEn: [
-                    ...prevState.answerErrorEn,
-                    this.state.questions[this.state.page].text,
-                ],
-            }));
-            this.setState((prevState) => ({
-                answerErrorRu: [
-                    ...prevState.answerErrorRu,
-                    this.state.questions[this.state.page].text_translate,
-                ],
-            }));
-
-            this.setState((prevState) => ({
-                answerAudioErrorEn: [
-                    ...prevState.answerAudioErrorEn,
-
-                    this.state.questions[this.state.page].audio,
-                ],
-            }));
-
-            this.play(this.state.errorSound);
-            this.setState({ errorWords: this.state.errorWords + 1 });
+            this.play(errorSound);
             this.setState((prevState) => ({
                 page: prevState.page + 1,
                 lives: prevState.lives - 1,
+                answers: [
+                    ...prevState.answers,
+                    {
+                        en: this.state.questions[this.state.page].text,
+                        ru: this.state.questions[this.state.page].text_translate,
+                        audio: this.state.questions[this.state.page].audio,
+                        right: false
+                    }
+                ],
             }));
             this.answer("savanna", false);
             this.props.createWord(
@@ -385,16 +350,16 @@ class Savanna extends React.Component {
         }
     };
 
-    play = (props) => {
-        const audio = new Audio(props);
+    play = (src) => {
+        const audio = new Audio(src);
         audio.volume = 0.25;
-        audio.play();
+        audio.play().catch((e) => console.log(e));
     };
 
-    playSound = (path, volume) => {
+    playSound = (path, volume = this.state.volume) => {
         const audio = new Audio(`${BASE_URL}${path}`);
         audio.volume = volume;
-        audio.play();
+        audio.play().catch((e) => console.log(e));
     };
 
     render() {
@@ -448,7 +413,7 @@ class Savanna extends React.Component {
             );
         } else
             return (this.state.loading && this.state.questions.length >= 20) ||
-                this.state.block ? (
+            this.state.block ? (
                 <Container>
                     {this.state.endgame ? (
                         <>
@@ -494,83 +459,53 @@ class Savanna extends React.Component {
                                 <Modal.Body>
                                     <div className="modal-text">
                                         Правильные ответы:
-                                        {this.state.answerRightEn.map(
-                                            (el, ind) => (
-                                                <>
-                                                    <div className="answer__rows">
-                                                        <div
-                                                            title="Озвучить"
-                                                            className="audio__listen"
-                                                            onClick={() =>
-                                                                this.playSound(
-                                                                    this.state
-                                                                        .answerAudioRightEn[
-                                                                        ind
-                                                                    ],
-                                                                    this.state
-                                                                        .volume
-                                                                )
-                                                            }
-                                                        ></div>
-                                                        <p className="modal-text-right">
-                                                            {el}
-                                                        </p>
+                                        {this.state.answers.filter((item) => item.right).map(
+                                            (item) => (
+                                                <div className="answer__rows" key={"right" + item.en}>
+                                                    <div
+                                                        title="Озвучить"
+                                                        className="audio__listen"
+                                                        onClick={() => this.playSound(item.audio)}
+                                                    />
+                                                    <p className="modal-text-right">
+                                                        {item.en}
+                                                    </p>
 
-                                                        <p className="modal-text-right">
-                                                            -
-                                                        </p>
+                                                    <p className="modal-text-right">
+                                                        -
+                                                    </p>
 
-                                                        <p className="modal-text-right">
-                                                            {
-                                                                this.state
-                                                                    .answerRightRu[
-                                                                    ind
-                                                                ]
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                </>
+                                                    <p className="modal-text-right">
+                                                        {item.ru}
+                                                    </p>
+                                                </div>
                                             )
                                         )}
                                     </div>
                                     <div className="modal-text">
                                         Не правильные ответы:
-                                        {this.state.answerErrorEn.map(
-                                            (el, ind) => (
-                                                <>
-                                                    <div className="answer__rows">
-                                                        <div
-                                                            title="Озвучить"
-                                                            className="audio__listen"
-                                                            onClick={() =>
-                                                                this.playSound(
-                                                                    this.state
-                                                                        .answerAudioErrorEn[
-                                                                        ind
-                                                                    ],
-                                                                    this.state
-                                                                        .volume
-                                                                )
-                                                            }
-                                                        ></div>
-                                                        <p className="modal-text-error">
-                                                            {el}
-                                                        </p>
+                                        {this.state.answers.filter((item) => item.right === false).map(
+                                            (item) => (
+                                                <div className="answer__rows" key={"wrong" + item.en}>
+                                                    <div
+                                                        title="Озвучить"
+                                                        className="audio__listen"
+                                                        onClick={() =>
+                                                            this.playSound(item.audio)
+                                                        }
+                                                    />
+                                                    <p className="modal-text-error">
+                                                        {item.en}
+                                                    </p>
 
-                                                        <p className="modal-text-error">
-                                                            -
-                                                        </p>
+                                                    <p className="modal-text-error">
+                                                        -
+                                                    </p>
 
-                                                        <p className="modal-text-error">
-                                                            {
-                                                                this.state
-                                                                    .answerErrorRu[
-                                                                    ind
-                                                                ]
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                </>
+                                                    <p className="modal-text-error">
+                                                        {item.ru}
+                                                    </p>
+                                                </div>
                                             )
                                         )}
                                     </div>
@@ -595,16 +530,16 @@ class Savanna extends React.Component {
                             <div className="savanna__content">
                                 <div className="savanna__header">
                                     <h2 className="savanna__title">
-                                        САВАННА <br />
+                                        САВАННА <br/>
                                     </h2>
                                     <div
                                         className="btn__full-screen"
                                         onClick={this.fullScreen}
-                                    ></div>
+                                    />
                                     <p className="savanna__count">
                                         Осталось слов:
                                         {this.state.questions.length -
-                                            this.state.page}
+                                        this.state.page}
                                     </p>
                                     <div className="heart__container">
                                         {hearts(this.state.lives)}
@@ -612,11 +547,7 @@ class Savanna extends React.Component {
                                 </div>
                                 <div className="savanna__question">
                                     <p className="question__text">
-                                        {
-                                            this.state.questions[
-                                                this.state.page
-                                            ].text
-                                        }
+                                        {this.state.questions[this.state.page].text}
                                     </p>
                                 </div>
                                 <div className="btn__container">
@@ -643,14 +574,7 @@ class Savanna extends React.Component {
                         </div>
                     )}
                 </Container>
-            ) : (
-                <div
-                    className="d-flex justify-content-center align-items-center"
-                    style={{ minHeight: 374 }}
-                >
-                    <Spinner size="lg" animation="border" variant="primary" />
-                </div>
-            );
+            ) : <Spin/>;
     }
 }
 
