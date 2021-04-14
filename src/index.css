@@ -34,6 +34,10 @@ code {
 	position: relative;
 }
 
+/* .card-header{
+	padding: 0.5rem 0.5rem;
+}
+ */
 @media (max-width: 480px) {
 	.btn {
 		margin-top: 1rem;

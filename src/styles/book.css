@@ -4,7 +4,7 @@ p {
 }
 
 .levels__container-book {
-	margin: 1rem 0;
+    margin: 1rem 0;
     height: 20vh;
     width: 80%;
     align-items: stretch;
@@ -22,6 +22,56 @@ p {
 
 .book__group {
     text-align: center;
+}
+
+.card-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.audio__icon {
+    background-image: url(../assets/icons/speaker.svg);
+    background-repeat: no-repeat;
+    width: 1.5rem;
+    height: 1.5rem;
+    z-index: 3;
+    cursor: pointer;
+    transform: rotate(-45deg);
+    transition: 0.2s all;
+}
+
+.audio__icon:hover {
+    opacity: 0.8;
+}
+
+.audio__icon:active {
+    transform: scale(0.9);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.card-body p:first-child {
+    font-weight: 600;
+}
+
+.card-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-text > span {
+    color: orange;
 }
 
 .stats__container {
