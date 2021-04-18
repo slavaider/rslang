@@ -1,0 +1,8 @@
+.rules__title {
+	margin: 2rem 0;
+}
+
+.rules__title,
+.game__name {
+	text-align: center;
+}

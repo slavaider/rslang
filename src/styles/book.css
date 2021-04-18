@@ -1,0 +1,183 @@
+p {
+    margin: 0;
+    padding: 0;
+}
+
+.levels__container-book {
+    margin: 1rem 0;
+    height: 20vh;
+    width: 80%;
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.level__changer-book {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 1rem 0;
+}
+
+.book__group {
+    text-align: center;
+}
+
+.card-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.audio__icon {
+    background-image: url(../assets/icons/speaker.svg);
+    background-repeat: no-repeat;
+    width: 1.5rem;
+    height: 1.5rem;
+    z-index: 3;
+    cursor: pointer;
+    transform: rotate(-45deg);
+    transition: 0.2s all;
+}
+
+.audio__icon:hover {
+    opacity: 0.8;
+}
+
+.audio__icon:active {
+    transform: scale(0.9);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.card-body p:first-child {
+    font-weight: 600;
+}
+
+.card-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-text > span {
+    color: orange;
+}
+
+.stats__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.book__stats {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stats__items {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-right: 4rem;
+}
+
+.stats__items.true {
+    color: green;
+}
+
+.stats__items.false {
+    color: red;
+}
+
+.column__items.book {
+    width: 30%;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.word__row {
+    width: 85%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.word__learning {
+    padding-left: 2.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    width: 25%;
+}
+
+.words__table {
+    display: flex;
+    flex-direction: column;
+}
+
+.table__learning {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 0.1rem solid black;
+    padding: 0.5rem 1.5rem;
+}
+
+.word__true,
+.word__false {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .levels__container-book {
+        height: auto;
+    }
+
+    .level__changer-book {
+        width: 100%;
+        height: auto;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .book__stats {
+        width: 90%;
+        font-size: 1rem;
+        flex-direction: column;
+    }
+
+    .table__learning {
+        padding: 0.2rem;
+        font-weight: normal;
+    }
+
+    .column__items.book {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+
+    .stats__items {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .word__learning {
+        padding-left: 0;
+        font-size: 1rem;
+    }
+}
